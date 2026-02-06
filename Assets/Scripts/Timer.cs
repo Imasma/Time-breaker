@@ -3,7 +3,7 @@ using TMPro;
 
 public class TimerUI : MonoBehaviour
 {
-    public GameTimer gameTimer;     // Référence à ton script de timer
+    public GameTimer gameTimer;     // Reference a ton script de timer
     public TextMeshProUGUI timerText;
 
     void Update()
