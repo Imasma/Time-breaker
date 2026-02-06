@@ -7,10 +7,17 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float gravityMultiplier = 2f;
     [SerializeField] private float jumpForce = 7f;
     [SerializeField] private float slowTimeScale = 0.1f;
+    
+    [Header("WallJump")]
+
+    [SerializeField] private Vector3 wallJumpPower = new Vector3(6f, 12f, 0f);
 
     [Header("Detection")]
     [SerializeField] private GroundCheck groundCheck; // Référence groundCheck
     [SerializeField] private WallDetection wallCheck; // Référence wallCheck
+    
+    [Header("WallSlide")] 
+    [SerializeField, Range(0f, 2)] private float wallSlideMultiplier = 0.5f;
     
     private Rigidbody rb;
     private bool moveInput;
@@ -37,14 +44,19 @@ public class PlayerMovement : MonoBehaviour
         // Saut (le booléen isGrounded est maintenant lu directement depuis le script GroundCheck)
         if (Input.GetButtonDown("Jump"))
         {
-            if (groundCheck.isGrounded || wallCheck.wallDetected)
+            if (groundCheck.isGrounded && !wallCheck.wallDetected)
             {
                 Jump();
+            }
+            else if (wallCheck.wallDetected && !groundCheck.isGrounded)
+            {
+                WallJump();
             }
         }
 
         ApplyTimeSlow();
     }
+
 
     void FixedUpdate()
     {
@@ -57,6 +69,11 @@ public class PlayerMovement : MonoBehaviour
         // Reset velocity Y pour un saut propre
         rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
         rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+    }
+    
+    private void WallJump()
+    {
+
     }
     
     void HandleMovement()
@@ -83,8 +100,18 @@ public class PlayerMovement : MonoBehaviour
         // Si on n'est pas au sol, on applique le surplus de gravité
         if (!groundCheck.isGrounded)
         {
-            rb.AddForce(Physics.gravity * (gravityMultiplier - 1f), ForceMode.Acceleration);
+            if (wallCheck.wallDetected)
+            {
+                rb.linearVelocity = new Vector3(rb.linearVelocity.x, Mathf.Clamp(rb.linearVelocity.y, -wallSlideMultiplier, float.MaxValue));
+
+            }
+            else
+            {
+               rb.AddForce(Physics.gravity * (gravityMultiplier - 1f), ForceMode.Acceleration);
+
+            }
         }
+
     }
 
     void ApplyTimeSlow()
