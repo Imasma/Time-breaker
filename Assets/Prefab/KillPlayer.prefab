@@ -122,3 +122,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   respawnPoint: {fileID: 0}
+  deathLightPrefab: {fileID: 2982713335877424101, guid: bb9fe018b5acba74b8347b55a4bd17b0, type: 3}
