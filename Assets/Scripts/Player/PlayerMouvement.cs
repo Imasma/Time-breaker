@@ -41,10 +41,12 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
+        // 1. Détection des entrées
         float x = Input.GetAxisRaw("Horizontal");
         float z = Input.GetAxisRaw("Vertical");
         bool jumpPress = Input.GetButtonDown("Jump");
 
+        // On garde moveInput uniquement pour le calcul de la direction dans HandleMovement
         moveInput = (Mathf.Abs(x) > 0.1f || Mathf.Abs(z) > 0.1f);
 
         if (jumpPress)
@@ -86,7 +88,6 @@ public class PlayerMovement : MonoBehaviour
 
         Vector3 targetVelocity = Vector3.ClampMagnitude(moveDirection, 1f) * finalSpeed;
         
-        //calcul force
         // on calcule la différence pour atteindre la vitesse cible.
         Vector3 velocityChange = (targetVelocity - new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z));
         rb.AddForce(new Vector3(velocityChange.x, 0, velocityChange.z), ForceMode.VelocityChange);
@@ -114,22 +115,32 @@ public class PlayerMovement : MonoBehaviour
 
     void ApplyTimeSlow()
     {
-        if (moveInput && currentSlowEnergy > 0f) //si on bouge et qu'on à l'énergie
+        // On vérifie si le personnage a de l'inertie (vitesse réelle du Rigidbody)
+        // 0.1f pour ignorer les micro-vibrations parce que c'est chiant
+        bool hasInertia = rb.linearVelocity.magnitude > 0.1f;
+
+        if (hasInertia && currentSlowEnergy > 0f) // si le corps bouge (chute, élan, touches) et qu'on a de l'énergie
         {
             Time.timeScale = slowTimeScale;
-            currentSlowEnergy -= drainSpeed * Time.unscaledDeltaTime;
+            
+            // On vide la barre 
+           // currentSlowEnergy -= drainSpeed * Time.unscaledDeltaTime;
         }
-        else if (!moveInput ) // si on bouge pas
+        else // si le corps est à l'arrêt total (plus d'inertie) ou plus d'énergie
         {
             Time.timeScale = 1f;
+            
+            // On remplit la barre
             currentSlowEnergy += refillSpeed * Time.unscaledDeltaTime;
         }
-        else if (currentSlowEnergy == 0f) //enlève le slow si y a plus d'énergie
+
+        // enlève le slow de force si l'énergie atteint zéro (sécurité)
+        if (currentSlowEnergy <= 0.01f) 
         {
             Time.timeScale = 1f;
         }
 
-        currentSlowEnergy = Mathf.Clamp(currentSlowEnergy, 0f, maxSlowEnergy);
+        currentSlowEnergy = Mathf.Clamp(currentSlowEnergy, 0f, maxSlowEnergy); // pour ne pas dépasser 0 ou le Max
         
         // On lisse le changement de fixedDeltaTime
         Time.fixedDeltaTime = 0.02f * Time.timeScale;
