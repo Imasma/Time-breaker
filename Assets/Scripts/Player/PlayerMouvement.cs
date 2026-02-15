@@ -29,6 +29,8 @@ public class PlayerMovement : MonoBehaviour
 
     private Rigidbody rb;
     private bool moveInput;
+    private float inputX;
+    private float inputZ;
 
     void Start()
     {
@@ -42,19 +44,19 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
         // 1. Détection des entrées
-        float x = Input.GetAxisRaw("Horizontal");
-        float z = Input.GetAxisRaw("Vertical");
+        inputX = Input.GetAxisRaw("Horizontal");
+        inputZ = Input.GetAxisRaw("Vertical");
         bool jumpPress = Input.GetButtonDown("Jump");
 
         // On garde moveInput uniquement pour le calcul de la direction dans HandleMovement
-        moveInput = (Mathf.Abs(x) > 0.1f || Mathf.Abs(z) > 0.1f);
+        moveInput = (Mathf.Abs(inputX) > 0.1f || Mathf.Abs(inputZ) > 0.1f);
 
         if (jumpPress)
         {
             if (groundCheck.isGrounded) Jump();
             else if (wallCheck.wallDetected && !groundCheck.isGrounded) WallJump();
         }
-
+        Debug.Log(rb.linearVelocity);
         ApplyTimeSlow();
     }
 
@@ -78,19 +80,17 @@ public class PlayerMovement : MonoBehaviour
     
     void HandleMovement()
     {
-        float x = Input.GetAxis("Horizontal");
-        float z = Input.GetAxis("Vertical");
-
-        Vector3 moveDirection = transform.right * x + transform.forward * z;
+        // On calcule la direction de mouvement
+        Vector3 moveDirection = (transform.right * inputX + transform.forward * inputZ).normalized;
+        
         float finalSpeed = speed;
 
+        // On applique le boost si le slow est activé
         if (Time.timeScale < 1f) finalSpeed *= slowPlayerBoost;
 
-        Vector3 targetVelocity = Vector3.ClampMagnitude(moveDirection, 1f) * finalSpeed;
-        
-        // on calcule la différence pour atteindre la vitesse cible.
-        Vector3 velocityChange = (targetVelocity - new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z));
-        rb.AddForce(new Vector3(velocityChange.x, 0, velocityChange.z), ForceMode.VelocityChange);
+        // Application directe de la vitesse (basé sur ta fonction) : 
+        // On définit la vélocité X et Z sans toucher au Y (gravité/saut)
+        rb.linearVelocity = new Vector3(moveDirection.x * finalSpeed, rb.linearVelocity.y, moveDirection.z * finalSpeed);
     }
     
     void ApplyGravity()
@@ -115,18 +115,18 @@ public class PlayerMovement : MonoBehaviour
 
     void ApplyTimeSlow()
     {
-        // On vérifie si le personnage a de l'inertie (vitesse réelle du Rigidbody)
-        // 0.1f pour ignorer les micro-vibrations parce que c'est chiant
-        bool hasInertia = rb.linearVelocity.magnitude > 0.1f;
+        // On vérifie si le personnage a de l'inertie
+        bool hasInertia = rb.linearVelocity.magnitude > 0.1f;  // 0.1f pour ignorer les micro-vibrations parce que c'est chiant
 
-        if (hasInertia && currentSlowEnergy > 0f) // si le corps bouge (chute, élan, touches) et qu'on a de l'énergie
+
+        if (hasInertia && currentSlowEnergy > 0f) 
         {
             Time.timeScale = slowTimeScale;
             
-            // On vide la barre 
+            // vide la barre 
            // currentSlowEnergy -= drainSpeed * Time.unscaledDeltaTime;
         }
-        else // si le corps est à l'arrêt total (plus d'inertie) ou plus d'énergie
+        else 
         {
             Time.timeScale = 1f;
             
@@ -139,8 +139,8 @@ public class PlayerMovement : MonoBehaviour
         {
             Time.timeScale = 1f;
         }
-
-        currentSlowEnergy = Mathf.Clamp(currentSlowEnergy, 0f, maxSlowEnergy); // pour ne pas dépasser 0 ou le Max
+        // pour ne pas dépasser 0 ou le max
+        currentSlowEnergy = Mathf.Clamp(currentSlowEnergy, 0f, maxSlowEnergy);
         
         // On lisse le changement de fixedDeltaTime
         Time.fixedDeltaTime = 0.02f * Time.timeScale;
