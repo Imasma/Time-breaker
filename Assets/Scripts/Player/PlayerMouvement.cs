@@ -36,9 +36,6 @@ public class PlayerMovement : MonoBehaviour
         rb.freezeRotation = true;
         rb.useGravity = true; 
         
-        // CONSEIL : Dans l'inspecteur, règle "Interpolate" sur "None" 
-        // pour éviter les catapultages lors des changements de TimeScale.
-        
         currentSlowEnergy = maxSlowEnergy; 
     }
 
@@ -74,7 +71,6 @@ public class PlayerMovement : MonoBehaviour
     private void WallJump()
     {
         rb.linearVelocity = Vector3.zero;
-        // Utilisation d'un Vector3 pour la force (X pour s'écarter, Y pour monter)
         rb.AddForce(new Vector3(0, wallJumpPower.y, 0), ForceMode.Impulse);
     }
     
@@ -90,7 +86,7 @@ public class PlayerMovement : MonoBehaviour
 
         Vector3 targetVelocity = Vector3.ClampMagnitude(moveDirection, 1f) * finalSpeed;
         
-        // CALCUL DE LA FORCE : Au lieu de forcer rb.linearVelocity, 
+        //calcul force
         // on calcule la différence pour atteindre la vitesse cible.
         Vector3 velocityChange = (targetVelocity - new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z));
         rb.AddForce(new Vector3(velocityChange.x, 0, velocityChange.z), ForceMode.VelocityChange);
@@ -102,10 +98,10 @@ public class PlayerMovement : MonoBehaviour
         {
             if (wallCheck.wallDetected && rb.linearVelocity.y < 0)
             {
-                // CORRECTION WALL SLIDE : Vitesse constante vers le bas
+                //Vitesse vers le bas
                 float targetSlideVelocity = -wallSlideMaxSpeed;
                 
-                // On applique une force pour atteindre cette vitesse de glisse
+                // force pour atteindre cette vitesse de glisse
                 float slideVelocityChange = targetSlideVelocity - rb.linearVelocity.y;
                 rb.AddForce(Vector3.up * slideVelocityChange, ForceMode.VelocityChange);
             }
