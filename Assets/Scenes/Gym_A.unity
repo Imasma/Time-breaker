@@ -600,6 +600,26 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6074051979434325325, guid: b7b1301ba98e4894c9b6d39242fa22fc, type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 6144616117553746613, guid: b7b1301ba98e4894c9b6d39242fa22fc, type: 3}
+      propertyPath: jumpForce
+      value: 18
+      objectReference: {fileID: 0}
+    - target: {fileID: 6144616117553746613, guid: b7b1301ba98e4894c9b6d39242fa22fc, type: 3}
+      propertyPath: maxSlowEnergy
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 6144616117553746613, guid: b7b1301ba98e4894c9b6d39242fa22fc, type: 3}
+      propertyPath: slowPlayerBoost
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 6144616117553746613, guid: b7b1301ba98e4894c9b6d39242fa22fc, type: 3}
+      propertyPath: gravityMultiplier
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 6234128663362313003, guid: b7b1301ba98e4894c9b6d39242fa22fc, type: 3}
       propertyPath: m_Name
       value: PlayerComp
