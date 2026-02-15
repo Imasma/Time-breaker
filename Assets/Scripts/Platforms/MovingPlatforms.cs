@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class KillAreaMove : MonoBehaviour
+public class MovingPlatforms : MonoBehaviour
 {
     [Header("Positions")]
     [SerializeField] private Transform startPoint;
@@ -11,24 +11,22 @@ public class KillAreaMove : MonoBehaviour
 
     void Update()
     {
-        MoveAlongX();
+        MovePlatform();
     }
 
-    private void MoveAlongX()
+    private void MovePlatform()
     {
         // On calcule un facteur qui varie entre 0 et 1 selon le temps et la vitesse
         float t = Mathf.PingPong(Time.time * speed, 1f);
-
-        // On interpole (Lerp) la platform
+        
         transform.position = Vector3.Lerp(startPoint.position, endPoint.position, t);
-
-
     }
+    
     private void OnDrawGizmos()
     {
         if (startPoint != null && endPoint != null)
         {
-            Gizmos.color = Color.red;
+            Gizmos.color = Color.green;
             Gizmos.DrawLine(startPoint.position, endPoint.position);
             Gizmos.DrawWireCube(startPoint.position, transform.localScale);
             Gizmos.DrawWireCube(endPoint.position, transform.localScale);

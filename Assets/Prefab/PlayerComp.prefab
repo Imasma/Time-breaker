@@ -343,7 +343,7 @@ Transform:
   m_GameObject: {fileID: 6941345876136782712}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1.88766, y: 5.699999, z: -0.40945053}
+  m_LocalPosition: {x: -1.88766, y: -11.57, z: -0.40945053}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -358,7 +358,7 @@ SphereCollider:
   m_PrefabInstance: {fileID: 535115859370710450}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6941345876136782712}
-  m_Material: {fileID: 13400000, guid: 41970a2306f48294d8bc962fb5f8e723, type: 2}
+  m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -412,11 +412,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 8
-  gravityMultiplier: 2
+  gravityMultiplier: 3
   jumpForce: 15
   slowTimeScale: 0.15
+  wallJumpPower: {x: 6, y: 12, z: 0}
   groundCheck: {fileID: 8649053773918438106}
   wallCheck: {fileID: 6675086211706175620}
+  wallSlideMaxSpeed: 2
+  maxSlowEnergy: 50
+  drainSpeed: 1
+  refillSpeed: 2
+  slowPlayerBoost: 10
+  currentSlowEnergy: 0
 --- !u!114 &6675086211706175620
 MonoBehaviour:
   m_ObjectHideFlags: 0
