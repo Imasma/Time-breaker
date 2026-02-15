@@ -8,23 +8,29 @@ public class Bascule : MonoBehaviour
     [SerializeField] private float restoreSpeed = 2f;     // Vitesse à laquelle elle revient
 
     private Quaternion targetRotation;
-    private bool isPlayerOnTop;
+    private bool isPlayerTouching; // Renommé pour plus de clarté (dessus ou dessous)
     private Transform playerTransform;
-    
-    
     
     void Update()
     {
-        if (isPlayerOnTop && playerTransform != null)
+        if (isPlayerTouching && playerTransform != null)
         {
-            // calcule la position relative du joueur sur l'axe X (de -0.5 à 0.5)
-            // divise par la taille de la plateforme pour que l'inclinaison soit proportionnelle
-            float localX = transform.InverseTransformPoint(playerTransform.position).x;
-            float platformWidth = 1f;
+            // Calcule la position relative (Locale) du joueur par rapport à la plateforme
+            Vector3 localPlayerPos = transform.InverseTransformPoint(playerTransform.position);
+            
+            float localX = localPlayerPos.x;
+            float localY = localPlayerPos.y;
 
             // On définit l'angle cible sur l'axe Z
-            // Si localX est positif (droite), la rotation Z doit être négative pour pencher vers le bas
+            // Par défaut : localX positif (droite) -> tiltAmount négatif (penche à droite)
             float tiltAmount = -localX * maxRotationAngle;
+
+            // INVERSION : Si le joueur est en dessous du centre de la plateforme
+            if (localY < 0)
+            {
+                tiltAmount = -tiltAmount; // On inverse l'inclinaison
+            }
+
             targetRotation = Quaternion.Euler(0, 0, tiltAmount);
         }
         else
@@ -34,16 +40,16 @@ public class Bascule : MonoBehaviour
         }
 
         // On applique la rotation de manière fluide
-        float currentSpeed = isPlayerOnTop ? basculeSpeed : restoreSpeed;
+        float currentSpeed = isPlayerTouching ? basculeSpeed : restoreSpeed;
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * currentSpeed);
     }
 
-    // Détection du joueur
+    // Détection du joueur (Collision pour le dessus ou le dessous)
     private void OnCollisionStay(Collision collision)
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            isPlayerOnTop = true;
+            isPlayerTouching = true;
             playerTransform = collision.transform;
         }
     }
@@ -52,7 +58,7 @@ public class Bascule : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            isPlayerOnTop = false;
+            isPlayerTouching = false;
         }
     }
 }

@@ -31,6 +31,7 @@ public class PlayerMovement : MonoBehaviour
     private bool moveInput;
     private float inputX;
     private float inputZ;
+    private bool isJumpingInput; // Nouvelle variable pour détecter si Espace est maintenu
 
     void Start()
     {
@@ -47,6 +48,9 @@ public class PlayerMovement : MonoBehaviour
         inputX = Input.GetAxisRaw("Horizontal");
         inputZ = Input.GetAxisRaw("Vertical");
         bool jumpPress = Input.GetButtonDown("Jump");
+        
+        // On vérifie si la touche saut (Espace) est maintenue enfoncée
+        isJumpingInput = Input.GetButton("Jump");
 
         // On garde moveInput uniquement pour le calcul de la direction dans HandleMovement
         moveInput = (Mathf.Abs(inputX) > 0.1f || Mathf.Abs(inputZ) > 0.1f);
@@ -56,7 +60,7 @@ public class PlayerMovement : MonoBehaviour
             if (groundCheck.isGrounded) Jump();
             else if (wallCheck.wallDetected && !groundCheck.isGrounded) WallJump();
         }
-        Debug.Log(rb.linearVelocity);
+        
         ApplyTimeSlow();
     }
 
@@ -118,8 +122,8 @@ public class PlayerMovement : MonoBehaviour
         // On vérifie si le personnage a de l'inertie
         bool hasInertia = rb.linearVelocity.magnitude > 0.1f;  // 0.1f pour ignorer les micro-vibrations parce que c'est chiant
 
-
-        if (hasInertia && currentSlowEnergy > 0f) 
+        // Si le joueur bouge, a de l'énergie ET ne maintient pas Espace
+        if (hasInertia && currentSlowEnergy > 0f && !isJumpingInput) 
         {
             Time.timeScale = slowTimeScale;
             
@@ -128,6 +132,7 @@ public class PlayerMovement : MonoBehaviour
         }
         else 
         {
+            // Si le joueur est à l'arrêt, n'a plus d'énergie OU maintient Espace
             Time.timeScale = 1f;
             
             // On remplit la barre

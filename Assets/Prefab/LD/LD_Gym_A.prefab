@@ -16,6 +16,10 @@ PrefabInstance:
       propertyPath: m_Icon
       value: 
       objectReference: {fileID: 5132851093641282708, guid: 0000000000000000d000000000000000, type: 0}
+    - target: {fileID: 3722310770500142208, guid: 7414d62e585102b45bf8503596ffb11e, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -2.58
+      objectReference: {fileID: 0}
     - target: {fileID: 4998271163659306583, guid: 7414d62e585102b45bf8503596ffb11e, type: 3}
       propertyPath: speed
       value: 5
@@ -484,7 +488,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2531376619454453291, guid: 34c5484f36d3ee44e943c98d477cd6e0, type: 3}
       propertyPath: m_Name
-      value: LD Variant
+      value: LD_Gym_A
+      objectReference: {fileID: 0}
+    - target: {fileID: 7080112805131066738, guid: 34c5484f36d3ee44e943c98d477cd6e0, type: 3}
+      propertyPath: m_TagString
+      value: Respawn Point
       objectReference: {fileID: 0}
     - target: {fileID: 7666322537065408978, guid: 34c5484f36d3ee44e943c98d477cd6e0, type: 3}
       propertyPath: m_LocalPosition.x

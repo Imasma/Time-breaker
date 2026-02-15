@@ -11,6 +11,19 @@ public class BulletSpawn : MonoBehaviour
     [SerializeField] private float bulletSpeed = 20f;
     [SerializeField] private float bulletLife = 2f;
     
+    private void Start()
+    {
+        
+        // On cherche l'objet qui possède le tag exact
+        GameObject foundRespawn = GameObject.FindWithTag("Respawn Point");
+
+        if (foundRespawn != null)
+        { 
+            respawnPoint = foundRespawn.transform;
+        }
+
+        
+    }
     void Update()
     {
         t -= Time.deltaTime;

@@ -9,7 +9,7 @@ public class WallDetection : MonoBehaviour
     private SphereCollider sphere;
     
     public bool wallDetected = false;
-
+    public float wallDirection = 0f; // 1 pour mur à droite, -1 pour mur à gauche
 
     private void Start()
     {
@@ -21,7 +21,7 @@ public class WallDetection : MonoBehaviour
         RayWallDetection();
     }
 
-private void RayWallDetection()
+    private void RayWallDetection()
     {
         wallDetected = false; 
 
@@ -39,12 +39,19 @@ private void RayWallDetection()
         {
             Vector3 rayOrigin = center + Vector3.up * yOffset;
 
-            // On check à Gauche et à Droite pour chaque hauteur
-            if (CheckWall(rayOrigin, Vector3.left, totalDist)) wallDetected = true;
-            if (CheckWall(rayOrigin, Vector3.right, totalDist)) wallDetected = true;
+            // On check à Gauche
+            if (CheckWall(rayOrigin, Vector3.left, totalDist)) 
+            {
+                wallDetected = true;
+                wallDirection = -1f; // Mur à gauche
+            }
+            // On check à Droite
+            if (CheckWall(rayOrigin, Vector3.right, totalDist)) 
+            {
+                wallDetected = true;
+                wallDirection = 1f; // Mur à droite
+            }
         }
-
-        Debug.Log(wallDetected);
     }
 
     private bool CheckWall(Vector3 origin, Vector3 direction, float distance)

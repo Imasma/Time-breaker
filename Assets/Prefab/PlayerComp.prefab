@@ -416,14 +416,14 @@ MonoBehaviour:
   gravityMultiplier: 3
   jumpForce: 15
   slowTimeScale: 0.15
-  wallJumpPower: {x: 6, y: 12, z: 0}
+  wallJumpPower: {x: 6, y: 20, z: 0}
   groundCheck: {fileID: 8649053773918438106}
   wallCheck: {fileID: 6675086211706175620}
   wallSlideMaxSpeed: 2
   maxSlowEnergy: 50
   drainSpeed: 1
   refillSpeed: 2
-  slowPlayerBoost: 10
+  slowPlayerBoost: 1
   currentSlowEnergy: 0
 --- !u!114 &6675086211706175620
 MonoBehaviour:
@@ -440,6 +440,7 @@ MonoBehaviour:
   wallRayLength: 0.1
   wallRayOffSet: 0.1
   wallDetected: 0
+  wallDirection: 0
 --- !u!114 &8649053773918438106
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -612,7 +613,7 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6941345876136782712}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 41970a2306f48294d8bc962fb5f8e723, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
