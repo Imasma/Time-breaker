@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Jaune
+  m_Name: Bleu
   m_Shader: {fileID: 4800000, guid: 7db3e7882e06e9244aa931741b77d7d8, type: 3}
   m_Parent: {fileID: 2100000, guid: d37383911053d364981641a79098d3bf, type: 2}
   m_ModifiedSerializedProperties: 8
@@ -33,14 +33,14 @@ Material:
     - _Cull: 0
     - _DstBlend: 10
     - _DstBlendAlpha: 10
-    - _EmissionPower: 3
+    - _EmissionPower: 10
     - _Smoothness: 0
     - _Surface: 1
     - _ZWrite: 0
     m_Colors:
     - _BaseColor: {r: 1, g: 0.96114665, b: 0.3820754, a: 0.43137255}
-    - _Color: {r: 1, g: 0.96114665, b: 0.38207537, a: 0.43137255}
-    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _Color: {r: 0.3803921, g: 0.387618, b: 1, a: 0.6313726}
+    - _EmissionColor: {r: 0.029230118, g: 0, b: 1, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
 --- !u!114 &7962763132406408851
