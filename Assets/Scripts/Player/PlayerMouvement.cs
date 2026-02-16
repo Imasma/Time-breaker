@@ -120,10 +120,10 @@ public class PlayerMovement : MonoBehaviour
             }
             else
             {
-                // MODIFICATION ICI : Calcul de la gravité finale
+                // Calcul de la gravité finale
                 float currentGravityMultiplier = gravityMultiplier;
 
-                // Si le temps est ralenti, on applique le boost de gravité
+                //Si le temps est ralenti, applique le boost de gravité
                 if (Time.timeScale < 1f)
                 {
                     currentGravityMultiplier *= slowPlayergravityBoost;
@@ -138,10 +138,8 @@ public class PlayerMovement : MonoBehaviour
     {
         // On vérifie si le personnage a de l'inertie
         bool hasInertia = rb.linearVelocity.magnitude > 0.1f;  // 0.1f pour ignorer les micro-vibrations parce que c'est chiant
-
-        // Si le joueur bouge, a de l'énergie ET ne maintient pas Espace, ni la touche BAS (S)
-        // J'ai ajouté && !isDownInput
-        if (hasInertia && currentSlowEnergy > 0f && !isJumpingInput && !isDownInput) //&& !isMovingInput
+        
+        if ( currentSlowEnergy > 0f && !isJumpingInput && !isDownInput && !isMovingInput) //hasInertia &&
         {
             Time.timeScale = slowTimeScale;
             
