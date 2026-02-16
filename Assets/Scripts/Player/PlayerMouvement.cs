@@ -16,7 +16,6 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private WallDetection wallCheck; 
     
     [Header("WallSlide")] 
-    // On définit une vitesse cible (ex: -2f) plutôt qu'un multiplicateur complexe
     [SerializeField] private float wallSlideMaxSpeed = 2f; 
     
     [Header("Slow System")]
@@ -31,7 +30,8 @@ public class PlayerMovement : MonoBehaviour
     private bool moveInput;
     private float inputX;
     private float inputZ;
-    private bool isJumpingInput; // Nouvelle variable pour détecter si Espace est maintenu
+    private bool isJumpingInput;
+    private bool isMovingInput;
 
     void Start()
     {
@@ -51,6 +51,9 @@ public class PlayerMovement : MonoBehaviour
         
         // On vérifie si la touche saut (Espace) est maintenue enfoncée
         isJumpingInput = Input.GetButton("Jump");
+
+        // On vérifie si le joueur appuie sur Droite ou Gauche
+        isMovingInput = Mathf.Abs(inputX) > 0.1f;
 
         // On garde moveInput uniquement pour le calcul de la direction dans HandleMovement
         moveInput = (Mathf.Abs(inputX) > 0.1f || Mathf.Abs(inputZ) > 0.1f);
@@ -92,8 +95,7 @@ public class PlayerMovement : MonoBehaviour
         // On applique le boost si le slow est activé
         if (Time.timeScale < 1f) finalSpeed *= slowPlayerBoost;
 
-        // Application directe de la vitesse (basé sur ta fonction) : 
-        // On définit la vélocité X et Z sans toucher au Y (gravité/saut)
+        // Application de la vitesse
         rb.linearVelocity = new Vector3(moveDirection.x * finalSpeed, rb.linearVelocity.y, moveDirection.z * finalSpeed);
     }
     
@@ -122,17 +124,17 @@ public class PlayerMovement : MonoBehaviour
         // On vérifie si le personnage a de l'inertie
         bool hasInertia = rb.linearVelocity.magnitude > 0.1f;  // 0.1f pour ignorer les micro-vibrations parce que c'est chiant
 
-        // Si le joueur bouge, a de l'énergie ET ne maintient pas Espace
-        if (hasInertia && currentSlowEnergy > 0f && !isJumpingInput) 
+        // Si le joueur bouge, a de l'énergie ET ne maintient pas Espace ET n'appuie pas sur les touches de mouvement
+        if (hasInertia && currentSlowEnergy > 0f && !isJumpingInput && !isMovingInput) 
         {
             Time.timeScale = slowTimeScale;
             
             // vide la barre 
            // currentSlowEnergy -= drainSpeed * Time.unscaledDeltaTime;
         }
-        else 
+        else  // Si le joueur est à l'arrêt, n'a plus d'énergie, maintient Espace OU se déplace manuellement
+
         {
-            // Si le joueur est à l'arrêt, n'a plus d'énergie OU maintient Espace
             Time.timeScale = 1f;
             
             // On remplit la barre
