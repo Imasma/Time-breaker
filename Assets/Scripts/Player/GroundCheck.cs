@@ -7,6 +7,8 @@ public class GroundCheck : MonoBehaviour
     
     private SphereCollider sphere;
     public bool isGrounded; // Changé en public pour y accéder depuis le PlayerMovement
+    [HideInInspector] public bool isOnBascule; // Nouvelle variable pour forcer le sol
+    
 
     private void Start()
     {
@@ -16,10 +18,13 @@ public class GroundCheck : MonoBehaviour
     private void Update()
     {
         RayGroundDetection();
+        if (isOnBascule) isGrounded = true;
     }
 
     private void RayGroundDetection()
     {
+        
+        
         isGrounded = false; 
 
         Vector3 center = transform.position + sphere.center;

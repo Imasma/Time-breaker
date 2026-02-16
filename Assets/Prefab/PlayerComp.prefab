@@ -293,7 +293,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &6895274127061359472
 Transform:
   m_ObjectHideFlags: 0
@@ -413,7 +413,6 @@ GameObject:
   m_Component:
   - component: {fileID: 557773948738305211}
   - component: {fileID: 2487906349653373155}
-  - component: {fileID: 8307300470314504094}
   - component: {fileID: 1375820250998886291}
   - component: {fileID: 3408195566335641927}
   - component: {fileID: 4966713133860908830}
@@ -450,7 +449,7 @@ SphereCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8941407511240436085}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 41970a2306f48294d8bc962fb5f8e723, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -464,27 +463,6 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.5104121
   m_Center: {x: 0, y: -0.008728623, z: 0}
---- !u!65 &8307300470314504094
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8941407511240436085}
-  m_Material: {fileID: 13400000, guid: 41970a2306f48294d8bc962fb5f8e723, type: 2}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!54 &1375820250998886291
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -654,8 +632,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 6
   gravityMultiplier: 2
-  jumpForce: 10
+  jumpForce: 15
   slowTimeScale: 0.1
+  slopeLimit: 45
+  slideSpeed: 10
   wallJumpPower: {x: 6, y: 12, z: 0}
   groundCheck: {fileID: 6241953448023499574}
   wallCheck: {fileID: 4131525704634234421}
@@ -664,6 +644,7 @@ MonoBehaviour:
   drainSpeed: 1
   refillSpeed: 2
   slowPlayerBoost: 10
+  slowPlayergravityBoost: 1.5
   currentSlowEnergy: 0
 --- !u!114 &6241953448023499574
 MonoBehaviour:

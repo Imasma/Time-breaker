@@ -8,6 +8,11 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float jumpForce = 7f;
     [SerializeField] private float slowTimeScale = 0.1f;
     
+    [Header("Slope Slide")]
+    [SerializeField] private float slopeLimit = 45f;    // Angle max avant de glisser
+    [SerializeField] private float slideSpeed = 10f;   // Vitesse de la glissade
+    private Vector3 hitNormal;                         // Direction de la pente
+    
     [Header("WallJump")]
     [SerializeField] private Vector3 wallJumpPower = new Vector3(6f, 12f, 0f);
 
@@ -75,6 +80,7 @@ public class PlayerMovement : MonoBehaviour
 
     void FixedUpdate()
     {
+        CheckSlope();
         HandleMovement();
         ApplyGravity();
     }
@@ -93,16 +99,20 @@ public class PlayerMovement : MonoBehaviour
     
     void HandleMovement()
     {
-        // On calcule la direction de mouvement
         Vector3 moveDirection = (transform.right * inputX + transform.forward * inputZ).normalized;
-        
         float finalSpeed = speed;
-
-        // On applique le boost si le slow est activé
         if (Time.timeScale < 1f) finalSpeed *= slowPlayerBoost;
 
-        // Application de la vitesse
-        rb.linearVelocity = new Vector3(moveDirection.x * finalSpeed, rb.linearVelocity.y, moveDirection.z * finalSpeed);
+        if (IsSliding())
+        {
+            // Calcul de la direction vers le bas de la pente
+            Vector3 slopeDirection = Vector3.ProjectOnPlane(Vector3.down, hitNormal).normalized;
+            rb.linearVelocity = new Vector3(slopeDirection.x * slideSpeed, rb.linearVelocity.y, slopeDirection.z * slideSpeed);
+        }
+        else
+        {
+            rb.linearVelocity = new Vector3(moveDirection.x * finalSpeed, rb.linearVelocity.y, moveDirection.z * finalSpeed);
+        }
     }
     
     void ApplyGravity()
@@ -164,5 +174,20 @@ public class PlayerMovement : MonoBehaviour
         
         // On lisse le changement de fixedDeltaTime
         Time.fixedDeltaTime = 0.02f * Time.timeScale;
+    }
+    
+    private void CheckSlope()
+    {
+        // Raycast court pour récupérer la normale (l'inclinaison) du sol
+        if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, 1.5f))
+            hitNormal = hit.normal;
+        else
+            hitNormal = Vector3.up;
+    }
+
+    private bool IsSliding()
+    {
+        // On glisse si on est au sol ET que la pente est plus raide que la limite
+        return groundCheck.isGrounded && Vector3.Angle(Vector3.up, hitNormal) > slopeLimit;
     }
 }
