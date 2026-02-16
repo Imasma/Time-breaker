@@ -23,6 +23,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float drainSpeed = 1f;
     [SerializeField] private float refillSpeed = 2f;
     [SerializeField] private float slowPlayerBoost = 1.5f; 
+    [SerializeField] private float slowPlayergravityBoost = 1.5f; // Nouvelle variable utilisée
     
     public float currentSlowEnergy;
 
@@ -32,6 +33,7 @@ public class PlayerMovement : MonoBehaviour
     private float inputZ;
     private bool isJumpingInput;
     private bool isMovingInput;
+    private bool isDownInput; // Nouvelle variable pour détecter la touche Bas / S
 
     void Start()
     {
@@ -51,6 +53,10 @@ public class PlayerMovement : MonoBehaviour
         
         // On vérifie si la touche saut (Espace) est maintenue enfoncée
         isJumpingInput = Input.GetButton("Jump");
+
+        // On vérifie si le joueur appuie vers le bas (S ou Flèche Bas)
+        // inputZ vaut -1 quand on va vers le bas
+        isDownInput = inputZ < -0.1f;
 
         // On vérifie si le joueur appuie sur Droite ou Gauche
         isMovingInput = Mathf.Abs(inputX) > 0.1f;
@@ -114,7 +120,16 @@ public class PlayerMovement : MonoBehaviour
             }
             else
             {
-                rb.AddForce(Physics.gravity * (gravityMultiplier - 1f), ForceMode.Acceleration);
+                // MODIFICATION ICI : Calcul de la gravité finale
+                float currentGravityMultiplier = gravityMultiplier;
+
+                // Si le temps est ralenti, on applique le boost de gravité
+                if (Time.timeScale < 1f)
+                {
+                    currentGravityMultiplier *= slowPlayergravityBoost;
+                }
+
+                rb.AddForce(Physics.gravity * (currentGravityMultiplier - 1f), ForceMode.Acceleration);
             }
         }
     }
@@ -124,16 +139,16 @@ public class PlayerMovement : MonoBehaviour
         // On vérifie si le personnage a de l'inertie
         bool hasInertia = rb.linearVelocity.magnitude > 0.1f;  // 0.1f pour ignorer les micro-vibrations parce que c'est chiant
 
-        // Si le joueur bouge, a de l'énergie ET ne maintient pas Espace ET n'appuie pas sur les touches de mouvement
-        if (hasInertia && currentSlowEnergy > 0f && !isJumpingInput && !isMovingInput) 
+        // Si le joueur bouge, a de l'énergie ET ne maintient pas Espace, ni la touche BAS (S)
+        // J'ai ajouté && !isDownInput
+        if (hasInertia && currentSlowEnergy > 0f && !isJumpingInput && !isDownInput) //&& !isMovingInput
         {
             Time.timeScale = slowTimeScale;
             
             // vide la barre 
            // currentSlowEnergy -= drainSpeed * Time.unscaledDeltaTime;
         }
-        else  // Si le joueur est à l'arrêt, n'a plus d'énergie, maintient Espace OU se déplace manuellement
-
+        else  // Si le joueur est à l'arrêt, n'a plus d'énergie, maintient Espace, appuie sur BAS OU se déplace manuellement
         {
             Time.timeScale = 1f;
             
