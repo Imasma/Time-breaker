@@ -27,7 +27,8 @@ public class PlayerMovement : MonoBehaviour
     public InputAction toggleSlowAction; // Touche pour activer le mode slow
     [SerializeField] private float slowTimeScale = 0.1f; // Slow de l'environnement
     [Range(0.1f, 1f)]
-    [SerializeField] private float playerSpeedPercentage = 0.6f; // Vitesse du joueur par rapport à sa vitesse normale pendant le slow
+    [Tooltip("Définit la vitesse globale du joueur en slow-mo (ex: 0.6 = le joueur fait tout à 60% de sa vitesse normale)")]
+    [SerializeField] private float playerSpeedPercentage = 0.6f; 
     
     [Header("Slow Motion Physics Tweaks")]
     [Tooltip("Ajustement manuel de la hauteur du saut en Slow-Mo (1 = hauteur mathématiquement identique au mode normal)")]
@@ -106,9 +107,15 @@ public class PlayerMovement : MonoBehaviour
 
         if (Time.timeScale < 1f)
         {
-            // 1. Base mathématique : compenser le ralentissement du temps
-            finalJumpSpeed /= Time.timeScale;
-            // 2. Tweak : appliquer ton multiplicateur personnel depuis l'inspecteur
+            /* MATHS DU SAUT :
+               Pour que le saut garde sa hauteur mais paraisse plus lent, on utilise le ratio de vitesse souhaité.
+               Ratio = (VitesseJoueurVoulue / VitesseMondeActuelle).
+               On multiplie la force par ce ratio pour que l'impulsion initiale compense exactement le slow du moteur.
+            */
+            float speedCompensation = playerSpeedPercentage / Time.timeScale;
+            finalJumpSpeed *= speedCompensation;
+            
+            // Tweak : appliquer ton multiplicateur personnel depuis l'inspecteur
             finalJumpSpeed *= slowJumpBoost;
         }
 
@@ -122,8 +129,9 @@ public class PlayerMovement : MonoBehaviour
 
         if (Time.timeScale < 1f)
         {
-            // Pareil pour le saut contre le mur
-            finalWallJumpY /= Time.timeScale;
+            // Pareil pour le saut contre le mur : harmonisation avec le pourcentage de vitesse du joueur
+            float speedCompensation = playerSpeedPercentage / Time.timeScale;
+            finalWallJumpY *= speedCompensation;
             finalWallJumpY *= slowJumpBoost;
         }
 
@@ -139,7 +147,6 @@ public class PlayerMovement : MonoBehaviour
         if (Time.timeScale < 1f) 
         {
             // Calcul : On multiplie par (Pourcentage voulu / TimeScale actuel)
-            // Exemple : Pour bouger à 60% (0.6) alors que le monde est à 10% (0.1), on booste la vitesse par 6.
             finalSpeed *= (playerSpeedPercentage / slowTimeScale);
         }
 
@@ -161,9 +168,17 @@ public class PlayerMovement : MonoBehaviour
 
         if (Time.timeScale < 1f)
         {
-            // 1. Base mathématique : division par le temps au carré (car accélération)
-            customGravity /= (Time.timeScale * Time.timeScale);
-            // 2. Tweak : appliquer ton multiplicateur personnel
+            /* MATHS DE LA GRAVITÉ :
+               La gravité est une accélération (m/s²). Puisque le temps (dt) intervient deux fois dans 
+               le calcul de la position (une fois pour la vitesse, une fois pour le déplacement),
+               on doit appliquer le ratio de compensation AU CARRÉ.
+               Cela permet au joueur de tomber à la même hauteur, mais avec une vitesse synchronisée 
+               sur son 'playerSpeedPercentage'.
+            */
+            float speedCompensation = playerSpeedPercentage / Time.timeScale;
+            customGravity *= (speedCompensation * speedCompensation);
+            
+            // Tweak : appliquer ton multiplicateur personnel pour ajuster le "poids" ressenti
             customGravity *= slowGravityBoost;
         }
 
@@ -177,7 +192,7 @@ public class PlayerMovement : MonoBehaviour
             }
             else
             {
-                // Application manuelle de notre gravité modifiée
+                // Application manuelle de notre gravité modifiée puisque rb.useGravity est False
                 rb.AddForce(customGravity, ForceMode.Acceleration);
             }
         }
@@ -195,7 +210,7 @@ public class PlayerMovement : MonoBehaviour
             Time.timeScale = 1f;
         }
 
-        // Ajustement indispensable du delta physique
+        // Ajustement indispensable du delta physique (FixedUpdate) pour garder une simulation fluide et stable
         Time.fixedDeltaTime = 0.02f * Time.timeScale;
     }
     
