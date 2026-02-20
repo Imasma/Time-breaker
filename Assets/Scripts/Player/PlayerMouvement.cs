@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -6,7 +7,6 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float speed = 6f;
     [SerializeField] private float gravityMultiplier = 2f;
     [SerializeField] private float jumpForce = 7f;
-    [SerializeField] private float slowTimeScale = 0.1f;
     
     [Header("Slope Slide")]
     [SerializeField] private float slopeLimit = 45f;    // Angle max avant de glisser
@@ -23,30 +23,43 @@ public class PlayerMovement : MonoBehaviour
     [Header("WallSlide")] 
     [SerializeField] private float wallSlideMaxSpeed = 2f; 
     
-    [Header("Slow System")]
-    [SerializeField] private float maxSlowEnergy = 5f;
-    [SerializeField] private float drainSpeed = 1f;
-    [SerializeField] private float refillSpeed = 2f;
-    [SerializeField] private float slowPlayerBoost = 1.5f; 
-    [SerializeField] private float slowPlayergravityBoost = 1.5f; // Nouvelle variable utilisée
+    [Header("Slow System (Mode Slow)")]
+    public InputAction toggleSlowAction; // Touche pour activer le mode slow
+    [SerializeField] private float slowTimeScale = 0.1f; // Slow de l'environnement
+    [Range(0.1f, 1f)]
+    [SerializeField] private float playerSpeedPercentage = 0.6f; // Vitesse du joueur par rapport à sa vitesse normale pendant le slow
     
-    public float currentSlowEnergy;
+    [Header("Slow Motion Physics Tweaks")]
+    [Tooltip("Ajustement manuel de la hauteur du saut en Slow-Mo (1 = hauteur mathématiquement identique au mode normal)")]
+    [SerializeField] private float slowJumpBoost = 1f; 
+    [Tooltip("Ajustement manuel de la lourdeur de la chute en Slow-Mo (1 = chute mathématiquement identique au mode normal)")]
+    [SerializeField] private float slowGravityBoost = 1f; 
+    
+    private bool isSlowModeActive = false; // Si vrai, on est en mode Slow. Si faux, mode Clone.
+    [HideInInspector] public bool isGhostActive = false; // Géré par ModesGestion
 
     private Rigidbody rb;
-    private bool moveInput;
     private float inputX;
     private float inputZ;
-    private bool isJumpingInput;
-    private bool isMovingInput;
-    private bool isDownInput; // Nouvelle variable pour détecter la touche Bas / S
+
+    private void OnEnable()
+    {
+        toggleSlowAction.Enable();
+        toggleSlowAction.performed += _ => ToggleSlowMode();
+    }
+
+    private void OnDisable()
+    {
+        toggleSlowAction.Disable();
+        toggleSlowAction.performed -= _ => ToggleSlowMode();
+    }
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
-        rb.useGravity = true; 
-        
-        currentSlowEnergy = maxSlowEnergy; 
+        // On DÉSACTIVE la gravité de base de Unity pour la gérer nous-mêmes de façon 100% précise
+        rb.useGravity = false; 
     }
 
     void Update()
@@ -55,19 +68,6 @@ public class PlayerMovement : MonoBehaviour
         inputX = Input.GetAxisRaw("Horizontal");
         inputZ = Input.GetAxisRaw("Vertical");
         bool jumpPress = Input.GetButtonDown("Jump");
-        
-        // On vérifie si la touche saut (Espace) est maintenue enfoncée
-        isJumpingInput = Input.GetButton("Jump");
-
-        // On vérifie si le joueur appuie vers le bas (S ou Flèche Bas)
-        // inputZ vaut -1 quand on va vers le bas
-        isDownInput = inputZ < -0.1f;
-
-        // On vérifie si le joueur appuie sur Droite ou Gauche
-        isMovingInput = Mathf.Abs(inputX) > 0.1f;
-
-        // On garde moveInput uniquement pour le calcul de la direction dans HandleMovement
-        moveInput = (Mathf.Abs(inputX) > 0.1f || Mathf.Abs(inputZ) > 0.1f);
 
         if (jumpPress)
         {
@@ -85,27 +85,66 @@ public class PlayerMovement : MonoBehaviour
         ApplyGravity();
     }
 
+    private void ToggleSlowMode()
+    {
+        // On ne change de mode que si un fantôme n'est pas déjà déployé
+        if (!isGhostActive)
+        {
+            isSlowModeActive = !isSlowModeActive;
+        }
+    }
+
+    // Utilisé par ModesGestion pour forcer le retour en mode Clone
+    public void SetSlowMode(bool active)
+    {
+        isSlowModeActive = active;
+    }
+
     private void Jump()
     {
         float finalJumpSpeed = jumpForce;
+
+        if (Time.timeScale < 1f)
+        {
+            // 1. Base mathématique : compenser le ralentissement du temps
+            finalJumpSpeed /= Time.timeScale;
+            // 2. Tweak : appliquer ton multiplicateur personnel depuis l'inspecteur
+            finalJumpSpeed *= slowJumpBoost;
+        }
+
         rb.linearVelocity = new Vector3(rb.linearVelocity.x, finalJumpSpeed, rb.linearVelocity.z);
     }
     
     private void WallJump()
     {
         rb.linearVelocity = Vector3.zero;
-        rb.AddForce(new Vector3(0, wallJumpPower.y, 0), ForceMode.Impulse);
+        float finalWallJumpY = wallJumpPower.y;
+
+        if (Time.timeScale < 1f)
+        {
+            // Pareil pour le saut contre le mur
+            finalWallJumpY /= Time.timeScale;
+            finalWallJumpY *= slowJumpBoost;
+        }
+
+        rb.AddForce(new Vector3(0, finalWallJumpY, 0), ForceMode.Impulse);
     }
     
     void HandleMovement()
     {
         Vector3 moveDirection = (transform.right * inputX + transform.forward * inputZ).normalized;
         float finalSpeed = speed;
-        if (Time.timeScale < 1f) finalSpeed *= slowPlayerBoost;
+
+        // Si le temps est ralenti, on applique la compensation pour que le joueur soit "moins slow"
+        if (Time.timeScale < 1f) 
+        {
+            // Calcul : On multiplie par (Pourcentage voulu / TimeScale actuel)
+            // Exemple : Pour bouger à 60% (0.6) alors que le monde est à 10% (0.1), on booste la vitesse par 6.
+            finalSpeed *= (playerSpeedPercentage / slowTimeScale);
+        }
 
         if (IsSliding())
         {
-            // Calcul de la direction vers le bas de la pente
             Vector3 slopeDirection = Vector3.ProjectOnPlane(Vector3.down, hitNormal).normalized;
             rb.linearVelocity = new Vector3(slopeDirection.x * slideSpeed, rb.linearVelocity.y, slopeDirection.z * slideSpeed);
         }
@@ -117,68 +156,51 @@ public class PlayerMovement : MonoBehaviour
     
     void ApplyGravity()
     {
+        // Gravité personnalisée
+        Vector3 customGravity = Physics.gravity * gravityMultiplier;
+
+        if (Time.timeScale < 1f)
+        {
+            // 1. Base mathématique : division par le temps au carré (car accélération)
+            customGravity /= (Time.timeScale * Time.timeScale);
+            // 2. Tweak : appliquer ton multiplicateur personnel
+            customGravity *= slowGravityBoost;
+        }
+
         if (!groundCheck.isGrounded)
         {
             if (wallCheck.wallDetected && rb.linearVelocity.y < 0)
             {
-                //Vitesse vers le bas
                 float targetSlideVelocity = -wallSlideMaxSpeed;
-                
-                // force pour atteindre cette vitesse de glisse
                 float slideVelocityChange = targetSlideVelocity - rb.linearVelocity.y;
                 rb.AddForce(Vector3.up * slideVelocityChange, ForceMode.VelocityChange);
             }
             else
             {
-                // Calcul de la gravité finale
-                float currentGravityMultiplier = gravityMultiplier;
-
-                //Si le temps est ralenti, applique le boost de gravité
-                if (Time.timeScale < 1f)
-                {
-                    currentGravityMultiplier *= slowPlayergravityBoost;
-                }
-
-                rb.AddForce(Physics.gravity * (currentGravityMultiplier - 1f), ForceMode.Acceleration);
+                // Application manuelle de notre gravité modifiée
+                rb.AddForce(customGravity, ForceMode.Acceleration);
             }
         }
     }
 
     void ApplyTimeSlow()
     {
-        // On vérifie si le personnage a de l'inertie
-        bool hasInertia = rb.linearVelocity.magnitude > 0.1f;  // 0.1f pour ignorer les micro-vibrations parce que c'est chiant
-        
-        if ( currentSlowEnergy > 0f && !isJumpingInput && !isDownInput && !isMovingInput) //hasInertia &&
+        // On applique le slow seulement si le mode est actif ET qu'aucun fantôme n'est déployé
+        if (isSlowModeActive && !isGhostActive) 
         {
             Time.timeScale = slowTimeScale;
-            
-            // vide la barre 
-           // currentSlowEnergy -= drainSpeed * Time.unscaledDeltaTime;
         }
-        else  // Si le joueur est à l'arrêt, n'a plus d'énergie, maintient Espace, appuie sur BAS OU se déplace manuellement
+        else  
         {
             Time.timeScale = 1f;
-            
-            // On remplit la barre
-            currentSlowEnergy += refillSpeed * Time.unscaledDeltaTime;
         }
 
-        // enlève le slow de force si l'énergie atteint zéro (sécurité)
-        if (currentSlowEnergy <= 0.01f) 
-        {
-            Time.timeScale = 1f;
-        }
-        // pour ne pas dépasser 0 ou le max
-        currentSlowEnergy = Mathf.Clamp(currentSlowEnergy, 0f, maxSlowEnergy);
-        
-        // On lisse le changement de fixedDeltaTime
+        // Ajustement indispensable du delta physique
         Time.fixedDeltaTime = 0.02f * Time.timeScale;
     }
     
     private void CheckSlope()
     {
-        // Raycast court pour récupérer la normale (l'inclinaison) du sol
         if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, 1.5f))
             hitNormal = hit.normal;
         else
@@ -187,7 +209,6 @@ public class PlayerMovement : MonoBehaviour
 
     private bool IsSliding()
     {
-        // On glisse si on est au sol ET que la pente est plus raide que la limite
         return groundCheck.isGrounded && Vector3.Angle(Vector3.up, hitNormal) > slopeLimit;
     }
 }

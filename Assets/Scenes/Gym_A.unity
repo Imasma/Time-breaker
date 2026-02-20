@@ -294,9 +294,33 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4966713133860908830, guid: b7b1301ba98e4894c9b6d39242fa22fc, type: 3}
+      propertyPath: toggleSlowAction.m_Name
+      value: Toggle Slow
+      objectReference: {fileID: 0}
+    - target: {fileID: 4966713133860908830, guid: b7b1301ba98e4894c9b6d39242fa22fc, type: 3}
+      propertyPath: toggleSlowAction.m_SingletonActionBindings.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4966713133860908830, guid: b7b1301ba98e4894c9b6d39242fa22fc, type: 3}
+      propertyPath: toggleSlowAction.m_SingletonActionBindings.Array.data[0].m_Id
+      value: 2150c7de-5e88-401a-ad9d-37274192ee91
+      objectReference: {fileID: 0}
+    - target: {fileID: 4966713133860908830, guid: b7b1301ba98e4894c9b6d39242fa22fc, type: 3}
+      propertyPath: toggleSlowAction.m_SingletonActionBindings.Array.data[0].m_Path
+      value: <Keyboard>/q
+      objectReference: {fileID: 0}
+    - target: {fileID: 4966713133860908830, guid: b7b1301ba98e4894c9b6d39242fa22fc, type: 3}
+      propertyPath: toggleSlowAction.m_SingletonActionBindings.Array.data[0].m_Action
+      value: Toggle Slow
+      objectReference: {fileID: 0}
     - target: {fileID: 6234128663362313003, guid: b7b1301ba98e4894c9b6d39242fa22fc, type: 3}
       propertyPath: m_Name
       value: PlayerComp
+      objectReference: {fileID: 0}
+    - target: {fileID: 9156033535460788796, guid: b7b1301ba98e4894c9b6d39242fa22fc, type: 3}
+      propertyPath: maxRecordedPositions
+      value: 100
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

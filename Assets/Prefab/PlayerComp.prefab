@@ -418,6 +418,7 @@ GameObject:
   - component: {fileID: 4966713133860908830}
   - component: {fileID: 6241953448023499574}
   - component: {fileID: 4131525704634234421}
+  - component: {fileID: 9156033535460788796}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -646,6 +647,7 @@ MonoBehaviour:
   slowPlayerBoost: 10
   slowPlayergravityBoost: 1.5
   currentSlowEnergy: 0
+  isGhostActive: 0
 --- !u!114 &6241953448023499574
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -661,6 +663,7 @@ MonoBehaviour:
   groundRayLength: 0.2
   groundRayOffSet: 0.1
   isGrounded: 0
+  isOnBascule: 0
 --- !u!114 &4131525704634234421
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -677,3 +680,40 @@ MonoBehaviour:
   wallRayOffSet: 0.1
   wallDetected: 0
   wallDirection: 0
+--- !u!114 &9156033535460788796
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8941407511240436085}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5af4fa064d5be3f4f8de86f1576a0bda, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PosRecorder
+  transparentGhostPrefab: {fileID: 2430888802347883230, guid: e27bd420e44417b439e8f8ed6661cee8, type: 3}
+  replacementPrefab: {fileID: 6126193903743271350, guid: 17bc1f061bf9ff24daf1d370b1e8a11d, type: 3}
+  playerRenderer: {fileID: 7948597571088407310}
+  trailRenderer: {fileID: 3408195566335641927}
+  normalMaterial: {fileID: 2100000, guid: d37383911053d364981641a79098d3bf, type: 2}
+  normalTrailMaterial: {fileID: 2100000, guid: d77999568c2a0dd48bc11da4de8c10b9, type: 2}
+  ghostActiveMaterial: {fileID: 2100000, guid: e845200705a44a04f853ec0c98a8f356, type: 2}
+  ghostActiveTrailMaterial: {fileID: 2100000, guid: 69215ffe7ed166a428dfa11e34027882, type: 2}
+  interactAction:
+    m_Name: Interact
+    m_Type: 1
+    m_ExpectedControlType: Button
+    m_Id: 8b64bbd3-fee4-4a73-9d3c-b723200630a3
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings:
+    - m_Name: 
+      m_Id: 4348b0ca-000f-425b-8f5d-f3483fe20f50
+      m_Path: <Keyboard>/e
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Interact
+      m_Flags: 0
+    m_Flags: 1
