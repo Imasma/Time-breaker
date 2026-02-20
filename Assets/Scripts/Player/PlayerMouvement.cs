@@ -24,7 +24,6 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float wallSlideMaxSpeed = 2f; 
     
     [Header("Slow System (Mode Slow)")]
-    public InputAction toggleSlowAction; // Touche pour activer le mode slow
     [SerializeField] private float slowTimeScale = 0.1f; // Slow de l'environnement
     [Range(0.1f, 1f)]
     [Tooltip("Définit la vitesse globale du joueur en slow-mo (ex: 0.6 = le joueur fait tout à 60% de sa vitesse normale)")]
@@ -36,24 +35,13 @@ public class PlayerMovement : MonoBehaviour
     [Tooltip("Ajustement manuel de la lourdeur de la chute en Slow-Mo (1 = chute mathématiquement identique au mode normal)")]
     [SerializeField] private float slowGravityBoost = 1f; 
     
-    private bool isSlowModeActive = false; // Si vrai, on est en mode Slow. Si faux, mode Clone.
+    private bool isSlowModeActive = true; // Par défaut True (Mode Orange au départ)
+    private bool wasActuallySlow = false; // Suivi de l'état réel du TimeScale pour la compensation
     [HideInInspector] public bool isGhostActive = false; // Géré par ModesGestion
 
     private Rigidbody rb;
     private float inputX;
     private float inputZ;
-
-    private void OnEnable()
-    {
-        toggleSlowAction.Enable();
-        toggleSlowAction.performed += _ => ToggleSlowMode();
-    }
-
-    private void OnDisable()
-    {
-        toggleSlowAction.Disable();
-        toggleSlowAction.performed -= _ => ToggleSlowMode();
-    }
 
     void Start()
     {
@@ -67,7 +55,7 @@ public class PlayerMovement : MonoBehaviour
     {
         // 1. Détection des entrées
         inputX = Input.GetAxisRaw("Horizontal");
-        inputZ = Input.GetAxisRaw("Vertical");
+        inputZ = Input.GetAxisRaw("Vertical"); // Utilisé pour détecter la touche "Bas"
         bool jumpPress = Input.GetButtonDown("Jump");
 
         if (jumpPress)
@@ -76,6 +64,7 @@ public class PlayerMovement : MonoBehaviour
             else if (wallCheck.wallDetected && !groundCheck.isGrounded) WallJump();
         }
         
+        // Gère le TimeScale et ajuste la vélocité si le temps change
         ApplyTimeSlow();
     }
 
@@ -86,30 +75,9 @@ public class PlayerMovement : MonoBehaviour
         ApplyGravity();
     }
 
-    private void ToggleSlowMode()
-    {
-        if (!isGhostActive)
-        {
-            isSlowModeActive = !isSlowModeActive;
-
-            // CALCUL DE LA COMPENSATION DE VÉLOCITÉ
-            // Ce ratio représente l'écart entre la physique normale et la physique compensée
-            float ratio = playerSpeedPercentage / slowTimeScale;
-
-            if (isSlowModeActive)
-            {
-                // On entre en slow : on booste la vélocité actuelle pour ne pas "tomber comme une pierre"
-                rb.linearVelocity *= ratio;
-            }
-            else
-            {
-                // On sort du slow : on réduit la vélocité pour ne pas être propulsé comme une fusée
-                rb.linearVelocity /= ratio;
-            }
-        }
-    }
-
-    // Utilisé par ModesGestion pour forcer le retour en mode Clone
+    /// <summary>
+    /// Appelé par ModesGestion lors du changement de couleur.
+    /// </summary>
     public void SetSlowMode(bool active)
     {
         isSlowModeActive = active;
@@ -122,14 +90,11 @@ public class PlayerMovement : MonoBehaviour
         if (Time.timeScale < 1f)
         {
             /* MATHS DU SAUT :
-               Pour que le saut garde sa hauteur mais paraisse plus lent, on utilise le ratio de vitesse souhaité.
                Ratio = (VitesseJoueurVoulue / VitesseMondeActuelle).
                On multiplie la force par ce ratio pour que l'impulsion initiale compense exactement le slow du moteur.
             */
             float speedCompensation = playerSpeedPercentage / Time.timeScale;
             finalJumpSpeed *= speedCompensation;
-            
-            // Tweak : appliquer ton multiplicateur personnel depuis l'inspecteur
             finalJumpSpeed *= slowJumpBoost;
         }
 
@@ -143,7 +108,6 @@ public class PlayerMovement : MonoBehaviour
 
         if (Time.timeScale < 1f)
         {
-            // Pareil pour le saut contre le mur : harmonisation avec le pourcentage de vitesse du joueur
             float speedCompensation = playerSpeedPercentage / Time.timeScale;
             finalWallJumpY *= speedCompensation;
             finalWallJumpY *= slowJumpBoost;
@@ -160,12 +124,12 @@ public class PlayerMovement : MonoBehaviour
         // Si le temps est ralenti, on applique la compensation pour que le joueur soit "moins slow"
         if (Time.timeScale < 1f) 
         {
-            // Calcul : On multiplie par (Pourcentage voulu / TimeScale actuel)
             finalSpeed *= (playerSpeedPercentage / slowTimeScale);
         }
 
         if (IsSliding())
         {
+            // Direction de la pente
             Vector3 slopeDirection = Vector3.ProjectOnPlane(Vector3.down, hitNormal).normalized;
             rb.linearVelocity = new Vector3(slopeDirection.x * slideSpeed, rb.linearVelocity.y, slopeDirection.z * slideSpeed);
         }
@@ -183,16 +147,10 @@ public class PlayerMovement : MonoBehaviour
         if (Time.timeScale < 1f)
         {
             /* MATHS DE LA GRAVITÉ :
-               La gravité est une accélération (m/s²). Puisque le temps (dt) intervient deux fois dans 
-               le calcul de la position (une fois pour la vitesse, une fois pour le déplacement),
-               on doit appliquer le ratio de compensation AU CARRÉ.
-               Cela permet au joueur de tomber à la même hauteur, mais avec une vitesse synchronisée 
-               sur son 'playerSpeedPercentage'.
+               On applique le ratio de compensation AU CARRÉ pour garder une chute cohérente.
             */
             float speedCompensation = playerSpeedPercentage / Time.timeScale;
             customGravity *= (speedCompensation * speedCompensation);
-            
-            // Tweak : appliquer ton multiplicateur personnel pour ajuster le "poids" ressenti
             customGravity *= slowGravityBoost;
         }
 
@@ -200,6 +158,7 @@ public class PlayerMovement : MonoBehaviour
         {
             if (wallCheck.wallDetected && rb.linearVelocity.y < 0)
             {
+                // WallSlide : Limitation de la vitesse de chute contre un mur
                 float targetSlideVelocity = -wallSlideMaxSpeed;
                 float slideVelocityChange = targetSlideVelocity - rb.linearVelocity.y;
                 rb.AddForce(Vector3.up * slideVelocityChange, ForceMode.VelocityChange);
@@ -214,17 +173,35 @@ public class PlayerMovement : MonoBehaviour
 
     void ApplyTimeSlow()
     {
-        // On applique le slow seulement si le mode est actif ET qu'aucun fantôme n'est déployé
-        if (isSlowModeActive && !isGhostActive) 
+        // LOGIQUE : Le slow est actif si (Mode Orange) ET (Pas de fantôme) ET (Touche BAS non pressée)
+        bool isDownPressed = inputZ < -0.1f;
+        bool shouldActuallyBeSlow = isSlowModeActive && !isGhostActive && !isDownPressed;
+
+        // Détection du CHANGEMENT d'état pour compenser la vélocité instantanément
+        if (shouldActuallyBeSlow != wasActuallySlow)
         {
-            Time.timeScale = slowTimeScale;
-        }
-        else  
-        {
-            Time.timeScale = 1f;
+            float ratio = playerSpeedPercentage / slowTimeScale;
+
+            if (shouldActuallyBeSlow)
+            {
+                // On passe au ralenti : on booste la vélocité pour ne pas tomber brutalement
+                Time.timeScale = slowTimeScale;
+                rb.linearVelocity *= ratio;
+            }
+            else
+            {
+                // On revient au temps normal : on réduit la vélocité pour éviter la propulsion
+                Time.timeScale = 1f;
+                rb.linearVelocity /= ratio;
+            }
+
+            // Ajustement indispensable du delta physique (FixedUpdate)
+            Time.fixedDeltaTime = 0.02f * Time.timeScale;
+            wasActuallySlow = shouldActuallyBeSlow;
         }
 
-        // Ajustement indispensable du delta physique (FixedUpdate) pour garder une simulation fluide et stable
+        // Sécurité pour maintenir le TimeScale
+        Time.timeScale = shouldActuallyBeSlow ? slowTimeScale : 1f;
         Time.fixedDeltaTime = 0.02f * Time.timeScale;
     }
     
@@ -243,7 +220,7 @@ public class PlayerMovement : MonoBehaviour
     
     public bool IsSlowModeActive()
     {
-        // On est en slow seulement si le mode est activé ET qu'on ne déploie pas de fantôme
-        return isSlowModeActive && !isGhostActive;
+        // Retourne l'état PHYSIQUE actuel du ralenti (utilisé par la caméra)
+        return wasActuallySlow;
     }
 }

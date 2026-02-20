@@ -241,8 +241,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 557773948738305211}
-  offset: {x: 0, y: 2, z: -10}
+  normalOffset: {x: 0, y: 2, z: -10}
+  slowModeOffset: {x: 0, y: 2, z: -15}
   smoothTime: 0.15
+  offsetTransitionSpeed: 5
 --- !u!1 &6234128663362313003
 GameObject:
   m_ObjectHideFlags: 0
@@ -634,19 +636,16 @@ MonoBehaviour:
   speed: 6
   gravityMultiplier: 2
   jumpForce: 15
-  slowTimeScale: 0.1
   slopeLimit: 45
   slideSpeed: 10
   wallJumpPower: {x: 6, y: 12, z: 0}
   groundCheck: {fileID: 6241953448023499574}
   wallCheck: {fileID: 4131525704634234421}
   wallSlideMaxSpeed: 2
-  maxSlowEnergy: 5
-  drainSpeed: 1
-  refillSpeed: 2
-  slowPlayerBoost: 10
-  slowPlayergravityBoost: 1.5
-  currentSlowEnergy: 0
+  slowTimeScale: 0.1
+  playerSpeedPercentage: 0.6
+  slowJumpBoost: 1
+  slowGravityBoost: 1
   isGhostActive: 0
 --- !u!114 &6241953448023499574
 MonoBehaviour:

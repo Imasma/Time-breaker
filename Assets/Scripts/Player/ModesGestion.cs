@@ -24,19 +24,19 @@ public class ModesGestion : MonoBehaviour
     private GameObject activeSolidClone; // Le clone solide actuel sur la map
     private bool isGhostDeployed = false;
 
-    // Référence pour bloquer le slow
+    // Référence pour piloter le slow
     private PlayerMovement playerMovement;
 
     private void Awake()
     {
-        // On récupère le script de mouvement sur le même objet
+        // On récupère le script de mouvement
         playerMovement = GetComponent<PlayerMovement>();
     }
 
     private void OnEnable()
     {
         interactAction.Enable();
-        interactAction.performed += _ => OnInteract(); // Déclenché quand la touche est pressé est pressé
+        interactAction.performed += _ => OnInteract(); 
     }
 
     private void OnDisable()
@@ -67,7 +67,7 @@ public class ModesGestion : MonoBehaviour
     {
         if (recordedPositions.Count == 0) return;
 
-        // --- Nettoyage de l'ancien clone solide ---
+        // kill ancien clone solide 
         if (activeSolidClone != null)
         {
             Destroy(activeSolidClone);
@@ -76,15 +76,20 @@ public class ModesGestion : MonoBehaviour
         // Créer le clone transparent sur la position la plus ANCIENNE enregistrée
         activeGhost = Instantiate(transparentGhostPrefab, recordedPositions[0], Quaternion.identity);
 
-        //  passer la RÉFÉRENCE de la liste
+        // Passer la RÉFÉRENCE de la liste
         activeGhost.GetComponentInChildren<Ghost>().SetPathReference(recordedPositions);
         
         isGhostDeployed = true;
 
-        //  Changement d'état du Joueur 
-        if (playerMovement != null) playerMovement.isGhostActive = true; // Désactive le slow
-        if (playerRenderer != null) playerRenderer.material = ghostActiveMaterial; // Change Material
-        if (playerRenderer != null) trailRenderer.material = ghostActiveTrailMaterial; // Change Material
+        // Passage au mode clone
+        if (playerMovement != null) 
+        {
+            playerMovement.isGhostActive = true; 
+            playerMovement.SetSlowMode(false); // On désactive la capacité de slow en mode bleu
+        }
+
+        if (playerRenderer != null) playerRenderer.material = ghostActiveMaterial; 
+        if (trailRenderer != null) trailRenderer.material = ghostActiveTrailMaterial; 
     }
 
     private void ReplaceAndDestroyGhost()
@@ -108,9 +113,14 @@ public class ModesGestion : MonoBehaviour
         recordedPositions.Clear();
         isGhostDeployed = false;
 
-        // --- Retour à l'état Normal ---
-        if (playerMovement != null) playerMovement.isGhostActive = false; // Réactive le slow
-        if (playerRenderer != null) playerRenderer.material = normalMaterial; // Remet Material normal
-        if (playerRenderer != null) trailRenderer.material = normalTrailMaterial; // Remet Material normal
+        // --- Retour à l'état Normal (Passage au mode ORANGE) ---
+        if (playerMovement != null) 
+        {
+            playerMovement.isGhostActive = false; 
+            playerMovement.SetSlowMode(true); // On réactive la capacité de slow en mode orange
+        }
+
+        if (playerRenderer != null) playerRenderer.material = normalMaterial; 
+        if (trailRenderer != null) trailRenderer.material = normalTrailMaterial; 
     }
 }
