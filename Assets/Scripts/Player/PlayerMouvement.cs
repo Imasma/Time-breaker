@@ -88,10 +88,24 @@ public class PlayerMovement : MonoBehaviour
 
     private void ToggleSlowMode()
     {
-        // On ne change de mode que si un fantôme n'est pas déjà déployé
         if (!isGhostActive)
         {
             isSlowModeActive = !isSlowModeActive;
+
+            // CALCUL DE LA COMPENSATION DE VÉLOCITÉ
+            // Ce ratio représente l'écart entre la physique normale et la physique compensée
+            float ratio = playerSpeedPercentage / slowTimeScale;
+
+            if (isSlowModeActive)
+            {
+                // On entre en slow : on booste la vélocité actuelle pour ne pas "tomber comme une pierre"
+                rb.linearVelocity *= ratio;
+            }
+            else
+            {
+                // On sort du slow : on réduit la vélocité pour ne pas être propulsé comme une fusée
+                rb.linearVelocity /= ratio;
+            }
         }
     }
 
@@ -225,5 +239,11 @@ public class PlayerMovement : MonoBehaviour
     private bool IsSliding()
     {
         return groundCheck.isGrounded && Vector3.Angle(Vector3.up, hitNormal) > slopeLimit;
+    }
+    
+    public bool IsSlowModeActive()
+    {
+        // On est en slow seulement si le mode est activé ET qu'on ne déploie pas de fantôme
+        return isSlowModeActive && !isGhostActive;
     }
 }
