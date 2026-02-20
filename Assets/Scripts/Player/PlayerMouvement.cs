@@ -173,9 +173,8 @@ public class PlayerMovement : MonoBehaviour
 
     void ApplyTimeSlow()
     {
-        // LOGIQUE : Le slow est actif si (Mode Orange) ET (Pas de fantôme) ET (Touche BAS non pressée)
-        bool isDownPressed = inputZ < -0.1f;
-        bool shouldActuallyBeSlow = isSlowModeActive && !isGhostActive && !isDownPressed;
+        // LOGIQUE : Le slow est actif si (Mode Orange) ET (Pas de fantôme)
+        bool shouldActuallyBeSlow = isSlowModeActive && !isGhostActive;
 
         // Détection du CHANGEMENT d'état pour compenser la vélocité instantanément
         if (shouldActuallyBeSlow != wasActuallySlow)
