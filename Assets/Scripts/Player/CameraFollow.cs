@@ -10,10 +10,16 @@ public class CameraFollow : MonoBehaviour
     [Header("Settings")]
     public float smoothTime = 0.2f;  
     public float offsetTransitionSpeed = 5f; // Vitesse de transition de l'offset
+    [Tooltip("Délai (en secondes) avant que la caméra ne commence à changer de perspective")]
+    public float timer = 1f; // Je l'ai passé en public pour l'inspecteur
 
     private Vector3 currentOffset;
     private Vector3 velocity = Vector3.zero;
     private PlayerMovement playerScript;
+
+    // --- NOUVELLES VARIABLES POUR LE DÉLAI ---
+    private bool currentCameraIsSlow = false; // L'état actuel que la caméra applique
+    private float currentWaitTime = 0f;       // Le chronomètre en cours
 
     void Start()
     {
@@ -29,18 +35,40 @@ public class CameraFollow : MonoBehaviour
     {
         if (target == null) return;
 
-        // On détermine quel offset utiliser selon l'état du joueur
-        Vector3 targetOffset = (playerScript != null && playerScript.IsSlowModeActive()) 
-            ? slowModeOffset 
-            : normalOffset;
+        // 1. On regarde quel est l'état REEL du joueur
+        bool playerIsSlow = (playerScript != null && playerScript.IsSlowModeActive());
 
-        // Transition fluide de l'offset actuel vers l'offset cible
+        // 2. GESTION DU DÉLAI
+        // Si le joueur est dans un état différent de celui de la caméra, on lance le chrono
+        if (playerIsSlow != currentCameraIsSlow)
+        {
+            // On utilise unscaledDeltaTime pour que le chrono de 1 seconde dure vraiment 1 seconde, 
+            // même si le jeu est au ralenti !
+            currentWaitTime += Time.unscaledDeltaTime;
+
+            // Si le timer est écoulé, la caméra valide le changement d'état
+            if (currentWaitTime >= timer)
+            {
+                currentCameraIsSlow = playerIsSlow;
+                currentWaitTime = 0f; // On réinitialise le chrono pour la prochaine fois
+            }
+        }
+        else
+        {
+            // Si le joueur a changé d'avis avant la fin du timer (ex: il appuie sur Bas puis relâche), on annule
+            currentWaitTime = 0f;
+        }
+
+        // 3. On détermine l'offset en fonction de l'état VALIDÉ de la caméra
+        Vector3 targetOffset = currentCameraIsSlow ? slowModeOffset : normalOffset;
+
+        // 4. Transition fluide de l'offset actuel vers l'offset cible
         // Utilise unscaledDeltaTime pour que la caméra change d'offset même au ralenti
         currentOffset = Vector3.Lerp(currentOffset, targetOffset, Time.unscaledDeltaTime * offsetTransitionSpeed);
 
         Vector3 targetPosition = target.position + currentOffset;
 
-        // même quand le monde est au ralenti.
+        // 5. Mouvement de la caméra
         transform.position = Vector3.SmoothDamp(
             transform.position, 
             targetPosition, 

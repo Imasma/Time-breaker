@@ -50,7 +50,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6126193903743271350, guid: 17bc1f061bf9ff24daf1d370b1e8a11d, type: 3}
       propertyPath: m_Name
-      value: Clone Variant
+      value: CloneFollow
       objectReference: {fileID: 0}
     - target: {fileID: 6126193903743271350, guid: 17bc1f061bf9ff24daf1d370b1e8a11d, type: 3}
       propertyPath: m_TagString
@@ -62,7 +62,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: de02a0026caaf3449bf8326709ad996e, type: 2}
     - target: {fileID: 8784604534324155517, guid: 17bc1f061bf9ff24daf1d370b1e8a11d, type: 3}
       propertyPath: m_TagString
-      value: Ground
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 8967442304500649189, guid: 17bc1f061bf9ff24daf1d370b1e8a11d, type: 3}
       propertyPath: m_LocalPosition.x
@@ -77,13 +77,19 @@ PrefabInstance:
       value: 4.299999
       objectReference: {fileID: 0}
     m_RemovedComponents:
-    - {fileID: 1118734666736379322, guid: 17bc1f061bf9ff24daf1d370b1e8a11d, type: 3}
-    m_RemovedGameObjects: []
+    - {fileID: 0}
+    - {fileID: 8314757737563872100, guid: 17bc1f061bf9ff24daf1d370b1e8a11d, type: 3}
+    - {fileID: 5097738737825781063, guid: 17bc1f061bf9ff24daf1d370b1e8a11d, type: 3}
+    m_RemovedGameObjects:
+    - {fileID: 7082620834104651026, guid: 17bc1f061bf9ff24daf1d370b1e8a11d, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 8784604534324155517, guid: 17bc1f061bf9ff24daf1d370b1e8a11d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1163267230847947075}
+    - targetCorrespondingSourceObject: {fileID: 8784604534324155517, guid: 17bc1f061bf9ff24daf1d370b1e8a11d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1564299565343103610}
   m_SourcePrefab: {fileID: 100100000, guid: 17bc1f061bf9ff24daf1d370b1e8a11d, type: 3}
 --- !u!1 &959816333519671061 stripped
 GameObject:
@@ -102,3 +108,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b66fbfd975ee383428892a5c618833c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Ghost
+--- !u!54 &1564299565343103610
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 959816333519671061}
+  serializedVersion: 5
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0

@@ -245,6 +245,7 @@ MonoBehaviour:
   slowModeOffset: {x: 0, y: 2, z: -15}
   smoothTime: 0.15
   offsetTransitionSpeed: 5
+  timer: 1
 --- !u!1 &6234128663362313003
 GameObject:
   m_ObjectHideFlags: 0
@@ -633,9 +634,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da6276ae0259c8744b6f0f8702d32839, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 6
-  gravityMultiplier: 2
-  jumpForce: 15
+  speed: 8
+  gravityMultiplier: 1
+  jumpForce: 11
   slopeLimit: 45
   slideSpeed: 10
   wallJumpPower: {x: 6, y: 12, z: 0}
@@ -643,7 +644,7 @@ MonoBehaviour:
   wallCheck: {fileID: 4131525704634234421}
   wallSlideMaxSpeed: 2
   slowTimeScale: 0.1
-  playerSpeedPercentage: 0.6
+  playerSpeedPercentage: 0.1
   slowJumpBoost: 1
   slowGravityBoost: 1
   isGhostActive: 0
@@ -699,6 +700,7 @@ MonoBehaviour:
   normalTrailMaterial: {fileID: 2100000, guid: d77999568c2a0dd48bc11da4de8c10b9, type: 2}
   ghostActiveMaterial: {fileID: 2100000, guid: e845200705a44a04f853ec0c98a8f356, type: 2}
   ghostActiveTrailMaterial: {fileID: 2100000, guid: 69215ffe7ed166a428dfa11e34027882, type: 2}
+  maxRecordedPositions: 150
   interactAction:
     m_Name: Interact
     m_Type: 1
