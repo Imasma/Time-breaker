@@ -7,8 +7,8 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float speed = 6f;
     [SerializeField] private float gravityMultiplier = 2f;
     [SerializeField] private float jumpForce = 7f;
-    private bool isMoving; 
-    
+    private bool isMoving;
+
     [Header("Slope Slide")]
     [SerializeField] private float slopeLimit = 45f;    // Angle max avant de glisser
     [SerializeField] private float slideSpeed = 10f;   // Vitesse de la glissade
@@ -19,23 +19,24 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Detection")]
     [SerializeField] private GroundCheck groundCheck; 
-    [SerializeField] private WallDetection wallCheck; 
+    [SerializeField] private WallDetection wallCheck;
     
     [Header("WallSlide")] 
-    [SerializeField] private float wallSlideMaxSpeed = 2f; 
+    [SerializeField] private float wallSlideMaxSpeed = 2f;
     
     [Header("Slow System (Mode Slow)")]
     [SerializeField] private float slowTimeScale = 0.1f; // Slow de l'environnement
     [Range(0.1f, 1f)]
     [Tooltip("Définit la vitesse globale du joueur en slow-mo (ex: 0.6 = le joueur fait tout à 60% de sa vitesse normale)")]
-    [SerializeField] private float playerSpeedPercentage = 0.6f; 
+    [SerializeField] private float playerSpeedPercentage = 0.6f;
+    [SerializeField] private float slowApplyCD = 0.5f; // Délai de stabilisation
     
     [Header("Slow Motion Physics Tweaks")]
     [Tooltip("Ajustement manuel de la hauteur du saut en Slow-Mo (1 = hauteur mathématiquement identique au mode normal)")]
-    [SerializeField] private float slowJumpBoost = 1f; 
+    [SerializeField] private float slowJumpBoost = 1f;
     [Tooltip("Ajustement manuel de la lourdeur de la chute en Slow-Mo (1 = chute mathématiquement identique au mode normal)")]
-    [SerializeField] private float slowGravityBoost = 1f; 
-    
+    [SerializeField] private float slowGravityBoost = 1f;
+
     private bool isSlowModeActive = true; // Par défaut True (Mode Orange au départ)
     private bool wasActuallySlow = false; // Suivi de l'état réel du TimeScale pour la compensation
     [HideInInspector] public bool isGhostActive = false; // Géré par ModesGestion
@@ -44,29 +45,27 @@ public class PlayerMovement : MonoBehaviour
     private float inputX;
     private float inputZ;
 
+    // Timer interne pour gérer le cooldown de transition
+    private float slowTransitionTimer = 0f;
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
-        // On DÉSACTIVE la gravité de base de Unity pour la gérer nous-mêmes de façon 100% précise
-        rb.useGravity = false; 
+        // On DÉSACTIVE la gravité de base de Unity pour la gérer nous-mêmes
+        rb.useGravity = false;
     }
 
     void Update()
     {
         // 1. Détection des entrées
         inputX = Input.GetAxisRaw("Horizontal");
-        inputZ = Input.GetAxisRaw("Vertical"); // Utilisé pour détecter la touche "Bas"
-        if (Mathf.Abs(inputX) > 0.1)
-        {
-            isMoving = true;
-        }
-        else
-        {
-            isMoving = false;
-        }
-        bool jumpPress = Input.GetButtonDown("Jump");
+        inputZ = Input.GetAxisRaw("Vertical");
 
+        // Détection du mouvement sur les deux axes
+        isMoving = (Mathf.Abs(inputX) > 0.1f || Mathf.Abs(inputZ) > 0.1f);
+
+        bool jumpPress = Input.GetButtonDown("Jump");
         if (jumpPress)
         {
             if (groundCheck.isGrounded) Jump();
@@ -84,9 +83,6 @@ public class PlayerMovement : MonoBehaviour
         ApplyGravity();
     }
 
-    /// <summary>
-    /// Appelé par ModesGestion lors du changement de couleur.
-    /// </summary>
     public void SetSlowMode(bool active)
     {
         isSlowModeActive = active;
@@ -95,16 +91,10 @@ public class PlayerMovement : MonoBehaviour
     private void Jump()
     {
         float finalJumpSpeed = jumpForce;
-
         if (Time.timeScale < 1f)
         {
-            /* MATHS DU SAUT :
-               Ratio = (VitesseJoueurVoulue / VitesseMondeActuelle).
-               On multiplie la force par ce ratio pour que l'impulsion initiale compense exactement le slow du moteur.
-            */
             float speedCompensation = playerSpeedPercentage / Time.timeScale;
-            finalJumpSpeed *= speedCompensation;
-            finalJumpSpeed *= slowJumpBoost;
+            finalJumpSpeed *= speedCompensation * slowJumpBoost;
         }
 
         rb.linearVelocity = new Vector3(rb.linearVelocity.x, finalJumpSpeed, rb.linearVelocity.z);
@@ -118,8 +108,7 @@ public class PlayerMovement : MonoBehaviour
         if (Time.timeScale < 1f)
         {
             float speedCompensation = playerSpeedPercentage / Time.timeScale;
-            finalWallJumpY *= speedCompensation;
-            finalWallJumpY *= slowJumpBoost;
+            finalWallJumpY *= speedCompensation * slowJumpBoost;
         }
 
         rb.AddForce(new Vector3(0, finalWallJumpY, 0), ForceMode.Impulse);
@@ -130,7 +119,6 @@ public class PlayerMovement : MonoBehaviour
         Vector3 moveDirection = (transform.right * inputX + transform.forward * inputZ).normalized;
         float finalSpeed = speed;
 
-        // Si le temps est ralenti, on applique la compensation pour que le joueur soit "moins slow"
         if (Time.timeScale < 1f) 
         {
             finalSpeed *= (playerSpeedPercentage / slowTimeScale);
@@ -138,7 +126,6 @@ public class PlayerMovement : MonoBehaviour
 
         if (IsSliding())
         {
-            // Direction de la pente
             Vector3 slopeDirection = Vector3.ProjectOnPlane(Vector3.down, hitNormal).normalized;
             rb.linearVelocity = new Vector3(slopeDirection.x * slideSpeed, rb.linearVelocity.y, slopeDirection.z * slideSpeed);
         }
@@ -150,31 +137,23 @@ public class PlayerMovement : MonoBehaviour
     
     void ApplyGravity()
     {
-        // Gravité personnalisée
         Vector3 customGravity = Physics.gravity * gravityMultiplier;
-
         if (Time.timeScale < 1f)
         {
-            /* MATHS DE LA GRAVITÉ :
-               On applique le ratio de compensation AU CARRÉ pour garder une chute cohérente.
-            */
             float speedCompensation = playerSpeedPercentage / Time.timeScale;
-            customGravity *= (speedCompensation * speedCompensation);
-            customGravity *= slowGravityBoost;
+            customGravity *= (speedCompensation * speedCompensation) * slowGravityBoost;
         }
 
         if (!groundCheck.isGrounded)
         {
             if (wallCheck.wallDetected && rb.linearVelocity.y < 0)
             {
-                // WallSlide : Limitation de la vitesse de chute contre un mur
                 float targetSlideVelocity = -wallSlideMaxSpeed;
                 float slideVelocityChange = targetSlideVelocity - rb.linearVelocity.y;
                 rb.AddForce(Vector3.up * slideVelocityChange, ForceMode.VelocityChange);
             }
             else
             {
-                // Application manuelle de notre gravité modifiée puisque rb.useGravity est False
                 rb.AddForce(customGravity, ForceMode.Acceleration);
             }
         }
@@ -182,34 +161,44 @@ public class PlayerMovement : MonoBehaviour
 
     void ApplyTimeSlow()
     {
-        // LOGIQUE : Le slow est actif si (Mode Orange) ET (Pas de fantôme)
-        bool shouldActuallyBeSlow = isSlowModeActive && !isGhostActive && !isMoving;
+        // État souhaité : lent si mode orange actif, pas de fantôme et joueur immobile 
+        bool targetSlowState = isSlowModeActive && !isGhostActive && !isMoving;
 
-        // Détection du CHANGEMENT d'état pour compenser la vélocité instantanément
-        if (shouldActuallyBeSlow != wasActuallySlow)
+        // Si l'état souhaité diffère de l'état actuel
+        if (targetSlowState != wasActuallySlow)
         {
-            float ratio = playerSpeedPercentage / slowTimeScale;
+            // Utilisation de unscaledDeltaTime pour un cooldown constant même en slow-mo 
+            slowTransitionTimer += Time.unscaledDeltaTime;
 
-            if (shouldActuallyBeSlow)
+            // On n'applique le changement que si l'état est stable pendant slowApplyCD 
+            if (slowTransitionTimer >= slowApplyCD)
             {
-                // On passe au ralenti : on booste la vélocité pour ne pas tomber brutalement
-                Time.timeScale = slowTimeScale;
-                rb.linearVelocity *= ratio;
-            }
-            else
-            {
-                // On revient au temps normal : on réduit la vélocité pour éviter la propulsion
-                Time.timeScale = 1f;
-                rb.linearVelocity /= ratio;
-            }
+                float ratio = playerSpeedPercentage / slowTimeScale;
 
-            // Ajustement indispensable du delta physique (FixedUpdate)
-            Time.fixedDeltaTime = 0.02f * Time.timeScale;
-            wasActuallySlow = shouldActuallyBeSlow;
+                if (targetSlowState)
+                {
+                    Time.timeScale = slowTimeScale;
+                    rb.linearVelocity *= ratio; // Compensation de vélocité pour éviter de tomber 
+                }
+                else
+                {
+                    Time.timeScale = 1f;
+                    rb.linearVelocity /= ratio; // Évite la propulsion brusque à la reprise 
+                }
+
+                Time.fixedDeltaTime = 0.02f * Time.timeScale;
+                wasActuallySlow = targetSlowState;
+                slowTransitionTimer = 0f;
+            }
+        }
+        else
+        {
+            // Si le mouvement reprend avant la fin du cooldown, on annule le changement
+            slowTransitionTimer = 0f;
         }
 
-        // Sécurité pour maintenir le TimeScale
-        Time.timeScale = shouldActuallyBeSlow ? slowTimeScale : 1f;
+        // Maintien des valeurs de temps
+        Time.timeScale = wasActuallySlow ? slowTimeScale : 1f;
         Time.fixedDeltaTime = 0.02f * Time.timeScale;
     }
     
@@ -228,7 +217,6 @@ public class PlayerMovement : MonoBehaviour
     
     public bool IsSlowModeActive()
     {
-        // Retourne l'état PHYSIQUE actuel du ralenti (utilisé par la caméra)
         return wasActuallySlow;
     }
 }
