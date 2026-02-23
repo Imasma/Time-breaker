@@ -7,6 +7,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float speed = 6f;
     [SerializeField] private float gravityMultiplier = 2f;
     [SerializeField] private float jumpForce = 7f;
+    private bool isMoving; 
     
     [Header("Slope Slide")]
     [SerializeField] private float slopeLimit = 45f;    // Angle max avant de glisser
@@ -56,6 +57,14 @@ public class PlayerMovement : MonoBehaviour
         // 1. Détection des entrées
         inputX = Input.GetAxisRaw("Horizontal");
         inputZ = Input.GetAxisRaw("Vertical"); // Utilisé pour détecter la touche "Bas"
+        if (Mathf.Abs(inputX) > 0.1)
+        {
+            isMoving = true;
+        }
+        else
+        {
+            isMoving = false;
+        }
         bool jumpPress = Input.GetButtonDown("Jump");
 
         if (jumpPress)
@@ -174,7 +183,7 @@ public class PlayerMovement : MonoBehaviour
     void ApplyTimeSlow()
     {
         // LOGIQUE : Le slow est actif si (Mode Orange) ET (Pas de fantôme)
-        bool shouldActuallyBeSlow = isSlowModeActive && !isGhostActive;
+        bool shouldActuallyBeSlow = isSlowModeActive && !isGhostActive && !isMoving;
 
         // Détection du CHANGEMENT d'état pour compenser la vélocité instantanément
         if (shouldActuallyBeSlow != wasActuallySlow)
