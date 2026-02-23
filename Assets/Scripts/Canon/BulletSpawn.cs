@@ -52,6 +52,6 @@ public class BulletSpawn : MonoBehaviour
             rb.linearVelocity = transform.forward * bulletSpeed;
         }
         
-        Destroy(newBullet, 2f); 
+        Destroy(newBullet, bulletLife); 
     }
 }

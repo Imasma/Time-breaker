@@ -8,6 +8,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 569069459054683654}
     m_Modifications:
+    - target: {fileID: 449146491846347275, guid: 7414d62e585102b45bf8503596ffb11e, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -8.963673
+      objectReference: {fileID: 0}
     - target: {fileID: 1307941302872742351, guid: 7414d62e585102b45bf8503596ffb11e, type: 3}
       propertyPath: m_Icon
       value: 
@@ -489,6 +493,14 @@ PrefabInstance:
     - target: {fileID: 2531376619454453291, guid: 34c5484f36d3ee44e943c98d477cd6e0, type: 3}
       propertyPath: m_Name
       value: LD_Gym_A
+      objectReference: {fileID: 0}
+    - target: {fileID: 3044800978171208245, guid: 34c5484f36d3ee44e943c98d477cd6e0, type: 3}
+      propertyPath: m_TagString
+      value: Ground
+      objectReference: {fileID: 0}
+    - target: {fileID: 5711061664549486594, guid: 34c5484f36d3ee44e943c98d477cd6e0, type: 3}
+      propertyPath: m_TagString
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 7080112805131066738, guid: 34c5484f36d3ee44e943c98d477cd6e0, type: 3}
       propertyPath: m_TagString

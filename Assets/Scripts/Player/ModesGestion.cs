@@ -16,6 +16,10 @@ public class ModesGestion : MonoBehaviour
     public Material ghostActiveMaterial; 
     public Material ghostActiveTrailMaterial; 
 
+    [Header("Settings")]
+    [Tooltip("La valeur x : le nombre maximum de positions mémorisées en mode orange.")]
+    public int maxRecordedPositions = 300; // Ex: 300 frames en FixedUpdate (~6 secondes à 50 FPS)
+
     [Header("Input")]
     public InputAction interactAction; // la touche dans l'inspecteur Unity
 
@@ -49,6 +53,19 @@ public class ModesGestion : MonoBehaviour
     {
         // Enregistrer la position en permanence à chaque frame physique
         recordedPositions.Add(transform.position);
+
+        // Tant qu'on est en mode orange (pas de fantôme déployé)
+        if (!isGhostDeployed)
+        {
+            // Si la liste dépasse la valeur x, on retire la position la plus vieille (l'index 0)
+            if (recordedPositions.Count > maxRecordedPositions)
+            {
+                recordedPositions.RemoveAt(0);
+            }
+        }
+        // Quand on passe en mode bleu (isGhostDeployed == true), 
+        // la condition ci-dessus est ignorée. La liste arrête de se vider et 
+        // continue simplement d'enregistrer les nouvelles positions.
     }
 
     private void OnInteract()
@@ -113,7 +130,7 @@ public class ModesGestion : MonoBehaviour
         recordedPositions.Clear();
         isGhostDeployed = false;
 
-        // --- Retour à l'état Normal (Passage au mode ORANGE) ---
+        //  Retour à l'état Normal (Passage au mode ORANGE)
         if (playerMovement != null) 
         {
             playerMovement.isGhostActive = false; 
