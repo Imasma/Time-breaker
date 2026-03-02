@@ -57,14 +57,13 @@ public class WallDetection : MonoBehaviour
     private bool CheckWall(Vector3 origin, Vector3 direction, float distance)
     {
         RaycastHit hit;
-        // Debug visuel pour voir les rayons dans la scène (Bleu)
         Debug.DrawRay(origin, direction * distance, Color.blue);
 
         if (Physics.Raycast(origin, direction, out hit, distance))
         {
-            if (hit.collider.CompareTag("Wall"))
+            // MODIFICATION : On vérifie si c'est un Mur OU un Clone
+            if (hit.collider.CompareTag("Wall") || hit.collider.CompareTag("Clone"))
             {
-                // Debug visuel si un mur est touché (Jaune)
                 Debug.DrawRay(hit.point, hit.normal, Color.yellow);
                 return true;
             }

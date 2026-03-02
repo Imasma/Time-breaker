@@ -18,13 +18,15 @@ public class ModesGestion : MonoBehaviour
 
     [Header("Settings")]
     public int maxRecordedPositions = 300; 
+    [Tooltip("Temps avant que le premier clone ne disparaisse quand un deuxième est créé")]
+    public float cloneLifeDuration = 7f; // <--- MODIFIABLE DANS L'INSPECTEUR
 
     [Header("Input")]
     public InputAction toggleModeAction; 
     public InputAction placeCloneAction;  
 
     private List<Vector3> recordedPositions = new List<Vector3>();
-    private List<GameObject> activeClones = new List<GameObject>(); // Liste des clones physiques sur la map
+    private List<GameObject> activeClones = new List<GameObject>(); 
     private GameObject activeGhost;      
     private bool isGhostDeployed = false;
 
@@ -32,7 +34,6 @@ public class ModesGestion : MonoBehaviour
 
     private void Awake()
     {
-        // Récupération du script de mouvement pour synchroniser le slow-mo
         playerMovement = GetComponent<PlayerMovement>();
     }
 
@@ -54,10 +55,7 @@ public class ModesGestion : MonoBehaviour
 
     void FixedUpdate()
     {
-        // Enregistre la position du joueur à chaque frame physique
         recordedPositions.Add(transform.position);
-
-        // En mode Orange (normal), on limite la liste à maxRecordedPositions
         if (!isGhostDeployed && recordedPositions.Count > maxRecordedPositions)
         {
             recordedPositions.RemoveAt(0);
@@ -74,28 +72,26 @@ public class ModesGestion : MonoBehaviour
     {
         if (recordedPositions.Count == 0) return;
 
-        // Création du fantôme au début du tracé enregistré
+        // SÉCURITÉ : Détruit le fantôme précédent s'il existe pour éviter les doublons
+        if (activeGhost != null) Destroy(activeGhost);
+
         activeGhost = Instantiate(transparentGhostPrefab, recordedPositions[0], Quaternion.identity);
         activeGhost.GetComponentInChildren<Ghost>().SetPathReference(recordedPositions);
         isGhostDeployed = true;
 
-        // Configuration du joueur (Désactivation du slow, changement de couleur)
         if (playerMovement != null) {
             playerMovement.isGhostActive = true; 
             playerMovement.SetSlowMode(false); 
         }
 
-        // --- CORRECTION : Mise à jour des visuels ---
         if (playerRenderer != null) playerRenderer.material = ghostActiveMaterial; 
         if (trailRenderer != null) trailRenderer.material = ghostActiveTrailMaterial; 
     }
 
     private void ExitBlueMode()
     {
-        // Destruction du fantôme lors du retour au mode Orange
         if (activeGhost != null) Destroy(activeGhost);
         
-        // Nettoyage de TOUS les clones physiques présents
         foreach (GameObject clone in activeClones) {
             if (clone != null) Destroy(clone);
         }
@@ -104,45 +100,53 @@ public class ModesGestion : MonoBehaviour
         recordedPositions.Clear();
         isGhostDeployed = false;
 
-        // Configuration du joueur (Réactivation du slow, retour au visuel normal)
         if (playerMovement != null) {
             playerMovement.isGhostActive = false; 
             playerMovement.SetSlowMode(true); 
         }
 
-        // --- CORRECTION : Mise à jour des visuels ---
         if (playerRenderer != null) playerRenderer.material = normalMaterial; 
-        if (trailRenderer != null) trailRenderer.material = normalTrailMaterial; 
+        if (trailRenderer != null) playerRenderer.material = normalTrailMaterial; 
     }
 
     private void OnPlaceClone()
     {
-        // Uniquement en mode bleu et si le fantôme est actif
-        if (isGhostDeployed && activeGhost != null)
+        if (!isGhostDeployed || activeGhost == null)
+            return;
+
+        Ghost movingGhost = activeGhost.GetComponentInChildren<Ghost>();
+
+        GameObject newClone = Instantiate(
+            replacementPrefab,
+            movingGhost.transform.position,
+            movingGhost.transform.rotation
+        );
+
+        activeClones.Add(newClone);
+
+        // Si on a maintenant PLUS de 2 clones → on détruit immédiatement le plus ancien
+        if (activeClones.Count > 2)
         {
-            // Si on a déjà 2 clones, le 1er disparaît instantanément pour laisser place au 3ème
-            if (activeClones.Count >= 2)
-            {
-                GameObject firstClone = activeClones[0];
-                activeClones.RemoveAt(0);
-                if (firstClone != null) Destroy(firstClone);
-            }
+            GameObject oldest = activeClones[0];
+            activeClones.RemoveAt(0);
 
-            // Récupère la position actuelle du fantôme pour y placer le clone physique
-            Ghost movingGhost = activeGhost.GetComponentInChildren<Ghost>();
-            GameObject newClone = Instantiate(replacementPrefab, movingGhost.transform.position, movingGhost.transform.rotation);
-            activeClones.Add(newClone);
+            if (oldest != null)
+                Destroy(oldest);
+        }
 
-            // Si on a maintenant exactement 2 clones, on lance le timer de 7s sur le plus ancien
-            if (activeClones.Count == 2)
+        // Si on a EXACTEMENT 2 clones → on lance le timer sur le PLUS ANCIEN
+        if (activeClones.Count == 2)
+        {
+            GameObject oldest = activeClones[0];
+
+            SolidClone sc = oldest.GetComponentInChildren<SolidClone>();
+            if (sc != null)
             {
-                SolidClone sc = activeClones[0].GetComponent<SolidClone>();
-                if (sc != null) sc.StartLifeTimer(7f);
+                sc.StartLifeTimer(cloneLifeDuration);
             }
         }
     }
 
-    // Utilisé par SolidClone.cs pour se retirer de la liste proprement à sa destruction
     public void RemoveCloneFromList(GameObject clone)
     {
         if (activeClones.Contains(clone)) activeClones.Remove(clone);

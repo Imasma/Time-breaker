@@ -14,6 +14,13 @@ public class Ghost : MonoBehaviour
         {
             rb.isKinematic = true; 
         }
+
+        // Désactivation de TOUS les colliders (Sphere Collider, etc.) pour être immatériel
+        Collider[] colliders = GetComponentsInChildren<Collider>();
+        foreach (Collider col in colliders)
+        {
+            col.enabled = false;
+        }
     }
 
     public void SetPathReference(List<Vector3> recordedPath)
@@ -26,13 +33,11 @@ public class Ghost : MonoBehaviour
     {
         if (pathReference == null) return;
 
-        // Le fantôme parcourt la liste des positions enregistrées par le joueur
+        // Suivi du chemin enregistré
         if (index < pathReference.Count)
         {
             transform.position = pathReference[index];
             index++;
         }
-        // Si l'index rattrape la fin de la liste, il attend que le joueur bouge 
-        // pour que ModesGestion.cs ajoute de nouvelles positions dans FixedUpdate.
     }
 }

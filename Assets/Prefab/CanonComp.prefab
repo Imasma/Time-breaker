@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 1194217033027850909}
   m_Layer: 0
   m_Name: Canon
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -127,7 +127,7 @@ GameObject:
   - component: {fileID: 8459513498541796718}
   m_Layer: 0
   m_Name: CanonBody
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

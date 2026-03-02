@@ -1,40 +1,43 @@
 using UnityEngine;
-using UnityEngine.Playables;
 using System.Collections;
 
 public class SolidClone : MonoBehaviour
 {
-    [Header("Animation")]
-    public PlayableDirector disappearanceTimeline; // Glissez votre Timeline ici
-    
     private ModesGestion manager;
 
     void Start()
     {
-        // On récupère le gestionnaire pour pouvoir se retirer de sa liste à la fin
-        manager = GameObject.FindGameObjectWithTag("Player").GetComponent<ModesGestion>();
+        // On cherche le joueur par son Tag
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        
+        if (player != null)
+        {
+            manager = player.GetComponent<ModesGestion>();
+        }
+        else
+        {
+            Debug.LogError("SolidClone : Aucun objet avec le tag 'Player' n'a été trouvé !");
+        }
     }
 
     public void StartLifeTimer(float delay)
     {
+        Debug.Log("SolidClone : Timer lancé pour " + delay + " secondes.");
         StartCoroutine(LifeRoutine(delay));
     }
 
     private IEnumerator LifeRoutine(float delay)
     {
-        // Attendre 7 secondes
-        yield return new WaitForSeconds(delay);
+        // On utilise le temps réel pour être sûr que le slow-mo n'arrête pas le chrono
+        yield return new WaitForSecondsRealtime(delay);
 
-        // Lancer la Timeline de disparition
-        if (disappearanceTimeline != null)
+        Debug.Log("SolidClone : Temps écoulé, destruction en cours...");
+
+        if (manager != null)
         {
-            disappearanceTimeline.Play();
-            // Attendre la fin de la timeline avant de détruire l'objet
-            yield return new WaitForSeconds((float)disappearanceTimeline.duration);
+            manager.RemoveCloneFromList(this.gameObject);
         }
 
-        // Prévenir le manager et détruire
-        if (manager != null) manager.RemoveCloneFromList(this.gameObject);
         Destroy(gameObject);
     }
 }
