@@ -15,5 +15,10 @@ public class BulletKill : MonoBehaviour
             rb.linearVelocity = Vector3.zero;
             
         }
+
+        if (other.CompareTag("Clone") || other.gameObject.layer == LayerMask.NameToLayer("Terrain"))
+        {
+            Destroy(gameObject);
+        }
     }
 }

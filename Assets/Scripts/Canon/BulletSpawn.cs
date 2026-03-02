@@ -5,7 +5,7 @@ public class BulletSpawn : MonoBehaviour
     [SerializeField] private float cooldown = 2f;
     private float t;
     [SerializeField] private GameObject bulletGO;
-    
+    [SerializeField] private Transform bulletSpawn; 
     [SerializeField] private Transform respawnPoint; 
     
     [SerializeField] private float bulletSpeed = 20f;
@@ -37,7 +37,7 @@ public class BulletSpawn : MonoBehaviour
     private void SpawnBullet()
     {
         // 1. On crée la balle
-        GameObject newBullet = Instantiate(bulletGO, transform.position, transform.rotation);
+        GameObject newBullet = Instantiate(bulletGO, bulletSpawn.transform.position, bulletSpawn.transform.rotation);
         
         // récupère le script BulletKill sur la balle qu'on vient de créer
         BulletKill bulletScript = newBullet.GetComponent<BulletKill>();
@@ -49,7 +49,7 @@ public class BulletSpawn : MonoBehaviour
         Rigidbody rb = newBullet.GetComponent<Rigidbody>();
         if (rb != null)
         {
-            rb.linearVelocity = transform.forward * bulletSpeed;
+            rb.linearVelocity = bulletSpawn.transform.forward * bulletSpeed;
         }
         
         Destroy(newBullet, bulletLife); 

@@ -245,7 +245,7 @@ MonoBehaviour:
   slowModeOffset: {x: 0, y: 2, z: -15}
   smoothTime: 0.15
   offsetTransitionSpeed: 5
-  timer: 1
+  timer: 0.5
 --- !u!1 &6234128663362313003
 GameObject:
   m_ObjectHideFlags: 0
@@ -645,6 +645,7 @@ MonoBehaviour:
   wallSlideMaxSpeed: 2
   slowTimeScale: 0.1
   playerSpeedPercentage: 0.1
+  slowApplyCD: 0.5
   slowJumpBoost: 1
   slowGravityBoost: 1
   isGhostActive: 0
@@ -701,20 +702,37 @@ MonoBehaviour:
   ghostActiveMaterial: {fileID: 2100000, guid: e845200705a44a04f853ec0c98a8f356, type: 2}
   ghostActiveTrailMaterial: {fileID: 2100000, guid: 69215ffe7ed166a428dfa11e34027882, type: 2}
   maxRecordedPositions: 150
-  interactAction:
-    m_Name: Interact
-    m_Type: 1
-    m_ExpectedControlType: Button
-    m_Id: 8b64bbd3-fee4-4a73-9d3c-b723200630a3
+  toggleModeAction:
+    m_Name: Toggle Mode
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 7fa92194-d37c-4064-8a2f-52c5657ab0ef
     m_Processors: 
     m_Interactions: 
     m_SingletonActionBindings:
     - m_Name: 
-      m_Id: 4348b0ca-000f-425b-8f5d-f3483fe20f50
+      m_Id: 7131934a-3927-42aa-90c5-a21c7a74fa6b
       m_Path: <Keyboard>/e
       m_Interactions: 
       m_Processors: 
       m_Groups: 
-      m_Action: Interact
+      m_Action: Toggle Mode
       m_Flags: 0
-    m_Flags: 1
+    m_Flags: 0
+  placeCloneAction:
+    m_Name: Place Clone
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 744adfc5-322b-452d-9d63-b6f6d383a5f5
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings:
+    - m_Name: 
+      m_Id: f1ec6a85-8274-49a2-a0fa-ed325c52a4a5
+      m_Path: <Keyboard>/r
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Place Clone
+      m_Flags: 0
+    m_Flags: 0

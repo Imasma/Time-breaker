@@ -234,6 +234,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4786814524132556326}
+  - component: {fileID: 3541280348318968466}
   m_Layer: 0
   m_Name: CanonComp
   m_TagString: Untagged
@@ -258,6 +259,24 @@ Transform:
   - {fileID: 2673860738836914236}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3541280348318968466
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4582356161355414052}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 550ece265a65fc04998179907d7a756a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BulletSpawn
+  cooldown: 2
+  bulletGO: {fileID: 4041590493987149802, guid: afbbeed0a242de642b0420f71bafe9cb, type: 3}
+  bulletSpawn: {fileID: 8136634660841425639}
+  respawnPoint: {fileID: 0}
+  bulletSpeed: 20
+  bulletLife: 2
 --- !u!1 &5475194898972686482
 GameObject:
   m_ObjectHideFlags: 0
@@ -267,7 +286,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8136634660841425639}
-  - component: {fileID: 6277406248279341408}
   m_Layer: 0
   m_Name: BulletSpawn
   m_TagString: Untagged
@@ -290,20 +308,3 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2673860738836914236}
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
---- !u!114 &6277406248279341408
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5475194898972686482}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 550ece265a65fc04998179907d7a756a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::BulletSpawn
-  cooldown: 2
-  bulletGO: {fileID: 4041590493987149802, guid: afbbeed0a242de642b0420f71bafe9cb, type: 3}
-  respawnPoint: {fileID: 0}
-  bulletSpeed: 20
-  bulletLife: 20

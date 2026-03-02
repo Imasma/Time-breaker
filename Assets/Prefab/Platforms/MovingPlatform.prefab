@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4089623368270168963}
   - component: {fileID: 4495246801693403569}
   - component: {fileID: 738787590136993014}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: MovingPlatWall
   m_TagString: Wall
   m_Icon: {fileID: 0}
@@ -123,7 +123,7 @@ GameObject:
   - component: {fileID: 1327958445438357300}
   - component: {fileID: 201212068100127527}
   - component: {fileID: 3416269467946533069}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: PlatformStay
   m_TagString: Ground
   m_Icon: {fileID: 0}
@@ -223,7 +223,7 @@ GameObject:
   - component: {fileID: 8687194111983428122}
   - component: {fileID: 4110049245572347876}
   - component: {fileID: 5464243675055631417}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: MovingPlatWall
   m_TagString: Wall
   m_Icon: {fileID: 0}
@@ -336,7 +336,7 @@ GameObject:
   - component: {fileID: 8764817287368835114}
   - component: {fileID: 2036180853847949576}
   - component: {fileID: 2473707206882973737}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: MovingPlatGround
   m_TagString: Ground
   m_Icon: {fileID: 0}
