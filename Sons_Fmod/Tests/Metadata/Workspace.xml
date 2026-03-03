@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.03.00">
+	<object class="Workspace" id="{198ecc03-44c9-4a88-ac23-7289643e180c}">
+		<property name="builtBanksOutputDirectory">
+			<value>../../../../../../../Time/Game/Time-breaker/Assets/BankFmod</value>
+		</property>
+		<relationship name="masterEventFolder">
+			<destination>{dc7d3821-ed11-428f-af19-355f9e5f4893}</destination>
+		</relationship>
+		<relationship name="masterTagFolder">
+			<destination>{e407ba1d-9ac2-4717-a186-b2b9ef97749a}</destination>
+		</relationship>
+		<relationship name="masterEffectPresetFolder">
+			<destination>{163b8792-8e87-47c9-b65e-63047452216d}</destination>
+		</relationship>
+		<relationship name="masterParameterPresetFolder">
+			<destination>{1395d523-8d4c-492f-afc7-4cd936839057}</destination>
+		</relationship>
+		<relationship name="masterBankFolder">
+			<destination>{2d065cfa-de5f-48e7-92a9-a06d956f7810}</destination>
+		</relationship>
+		<relationship name="masterSandboxFolder">
+			<destination>{4fdb5491-caee-4021-9085-c2f9f59916fc}</destination>
+		</relationship>
+		<relationship name="masterAssetFolder">
+			<destination>{e66f2b68-aeb2-460c-99e2-2969e744abca}</destination>
+		</relationship>
+		<relationship name="mixer">
+			<destination>{104023d9-bf55-45d0-b329-0f1060145322}</destination>
+		</relationship>
+		<relationship name="profilerSessionFolder">
+			<destination>{045d2107-18b0-4ae3-be21-6e4c8f7ad0a8}</destination>
+		</relationship>
+		<relationship name="platforms">
+			<destination>{f19fec00-4489-4844-91b5-65105ab55b70}</destination>
+		</relationship>
+	</object>
+</objects>

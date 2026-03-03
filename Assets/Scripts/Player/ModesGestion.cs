@@ -106,7 +106,7 @@ public class ModesGestion : MonoBehaviour
         }
 
         if (playerRenderer != null) playerRenderer.material = normalMaterial; 
-        if (trailRenderer != null) playerRenderer.material = normalTrailMaterial; 
+        if (trailRenderer != null) trailRenderer.material = normalTrailMaterial; 
     }
 
     private void OnPlaceClone()
