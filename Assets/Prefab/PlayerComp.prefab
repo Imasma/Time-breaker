@@ -102,8 +102,6 @@ GameObject:
   - component: {fileID: 8670783578057290947}
   - component: {fileID: 3326901327454760203}
   - component: {fileID: 522968822575272612}
-  - component: {fileID: 5583731451542214559}
-  - component: {fileID: 3932435702752715556}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -236,54 +234,9 @@ MonoBehaviour:
   target: {fileID: 557773948738305211}
   normalOffset: {x: 0, y: 2, z: -10}
   slowModeOffset: {x: 0, y: 2, z: -15}
-  smoothTime: 0.25
+  smoothTime: 0.15
   offsetTransitionSpeed: 5
-  timer: 0.25
---- !u!114 &5583731451542214559
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 408354109354283963}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 86c6556701af9e04380698b89f691b6e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: FMODUnity::FMODUnity.StudioListener
-  nonRigidbodyVelocity: 0
-  attenuationObject: {fileID: 0}
---- !u!114 &3932435702752715556
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 408354109354283963}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: FMODUnity::FMODUnity.StudioEventEmitter
-  CollisionTag: 
-  EventReference:
-    Guid:
-      Data1: 0
-      Data2: 0
-      Data3: 0
-      Data4: 0
-    Path: 
-  Event: 
-  EventPlayTrigger: 0
-  EventStopTrigger: 0
-  AllowFadeout: 1
-  TriggerOnce: 0
-  Preload: 0
-  NonRigidbodyVelocity: 0
-  Params: []
-  OverrideAttenuation: 0
-  OverrideMinDistance: -1
-  OverrideMaxDistance: -1
+  timer: 0.5
 --- !u!1 &6234128663362313003
 GameObject:
   m_ObjectHideFlags: 0
@@ -672,35 +625,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da6276ae0259c8744b6f0f8702d32839, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  jumpAction:
-    m_Name: Jump
-    m_Type: 0
-    m_ExpectedControlType: 
-    m_Id: c301e444-dd3d-4962-8640-685f8c000c54
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings:
-    - m_Name: 
-      m_Id: b9d59a25-fc72-480e-ade4-8bc70010b329
-      m_Path: <Keyboard>/space
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: Jump
-      m_Flags: 0
-    - m_Name: 
-      m_Id: 377b05c2-46fa-4b91-a12a-d626c796c757
-      m_Path: <Gamepad>/buttonSouth
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: Jump
-      m_Flags: 0
-    m_Flags: 0
-  topSpeed: 8
-  acceleration: 15
-  deceleration: 20
-  turnFriction: 60
+  speed: 8
   gravityMultiplier: 1
   jumpForce: 11
   slopeLimit: 45
@@ -711,6 +636,7 @@ MonoBehaviour:
   wallSlideMaxSpeed: 2
   slowTimeScale: 0.1
   playerSpeedPercentage: 0.1
+  slowApplyCD: 0.5
   slowJumpBoost: 1
   slowGravityBoost: 1
   isGhostActive: 0
@@ -726,8 +652,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24ae9c7ff07a3034981f0a133ea4b75d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GroundCheck
-  groundRayLength: 0.075
-  groundRayOffSet: 0.2
+  groundRayLength: 0.2
+  groundRayOffSet: 0.1
   isGrounded: 0
   isOnBascule: 0
 --- !u!114 &4131525704634234421
@@ -767,7 +693,7 @@ MonoBehaviour:
   ghostActiveMaterial: {fileID: 2100000, guid: e845200705a44a04f853ec0c98a8f356, type: 2}
   ghostActiveTrailMaterial: {fileID: 2100000, guid: 69215ffe7ed166a428dfa11e34027882, type: 2}
   maxRecordedPositions: 150
-  cloneLifeDuration: 1
+  cloneLifeDuration: 7
   toggleModeAction:
     m_Name: Toggle Mode
     m_Type: 0
@@ -780,14 +706,6 @@ MonoBehaviour:
       m_Id: 7131934a-3927-42aa-90c5-a21c7a74fa6b
       m_Path: <Keyboard>/e
       m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: Toggle Mode
-      m_Flags: 0
-    - m_Name: 
-      m_Id: aa003705-dcd5-46b0-bf15-3ccd35e72b5a
-      m_Path: <Gamepad>/leftTrigger
-      m_Interactions: Press
       m_Processors: 
       m_Groups: 
       m_Action: Toggle Mode
@@ -805,14 +723,6 @@ MonoBehaviour:
       m_Id: f1ec6a85-8274-49a2-a0fa-ed325c52a4a5
       m_Path: <Keyboard>/r
       m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: Place Clone
-      m_Flags: 0
-    - m_Name: 
-      m_Id: ac728c19-4f7a-400c-8630-bef9ee99b4a1
-      m_Path: <Gamepad>/rightTrigger
-      m_Interactions: Press
       m_Processors: 
       m_Groups: 
       m_Action: Place Clone

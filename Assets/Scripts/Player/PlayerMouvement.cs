@@ -1,24 +1,18 @@
 ﻿using UnityEngine;
-using UnityEngine.InputSystem; 
+using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
-    [Header("Input System")]
-    public InputAction jumpAction; 
-
-    [Header("Movement (Sonic Momentum)")]
-    [SerializeField] private float topSpeed = 12f;      // Vitesse maximale
-    [SerializeField] private float acceleration = 15f;  // Vitesse à laquelle on atteint le Top Speed
-    [SerializeField] private float deceleration = 25f;  // Vitesse de freinage quand on lâche le stick
-    [SerializeField] private float turnFriction = 40f;  // Force de freinage quand on fait un demi-tour brusque (Skid)
+    [Header("Movement")]
+    [SerializeField] private float speed = 6f;
     [SerializeField] private float gravityMultiplier = 2f;
     [SerializeField] private float jumpForce = 7f;
     private bool isMoving; 
 
     [Header("Slope Slide")]
-    [SerializeField] private float slopeLimit = 45f;
-    [SerializeField] private float slideSpeed = 10f;
-    private Vector3 hitNormal;
+    [SerializeField] private float slopeLimit = 45f;    // Angle max avant de glisser
+    [SerializeField] private float slideSpeed = 10f;   // Vitesse de la glissade
+    private Vector3 hitNormal;                         // Direction de la pente
     
     [Header("WallJump")]
     [SerializeField] private Vector3 wallJumpPower = new Vector3(6f, 12f, 0f);
@@ -31,9 +25,10 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float wallSlideMaxSpeed = 2f; 
     
     [Header("Slow System (Mode Slow)")]
-    [SerializeField] private float slowTimeScale = 0.1f;
+    [SerializeField] private float slowTimeScale = 0.1f; // Slow de l'environnement
     [Range(0.1f, 1f)]
     [SerializeField] private float playerSpeedPercentage = 0.6f; 
+    [SerializeField] private float slowApplyCD = 0.5f; 
     
     [Header("Slow Motion Physics Tweaks")]
     [SerializeField] private float slowJumpBoost = 1f;
@@ -47,8 +42,8 @@ public class PlayerMovement : MonoBehaviour
     private float inputX;
     private float inputZ;
 
-    private void OnEnable() => jumpAction.Enable();
-    private void OnDisable() => jumpAction.Disable();
+    // Timer pour gérer le cooldown et éviter les micro-freezes
+    private float slowTransitionTimer = 0f;
 
     void Start()
     {
@@ -62,9 +57,10 @@ public class PlayerMovement : MonoBehaviour
         inputX = Input.GetAxisRaw("Horizontal");
         inputZ = Input.GetAxisRaw("Vertical");
 
+        // On vérifie si le joueur appuie sur une touche de mouvement
         isMoving = (Mathf.Abs(inputX) > 0.1f || Mathf.Abs(inputZ) > 0.1f);
 
-        if (jumpAction.triggered)
+        if (Input.GetButtonDown("Jump"))
         {
             if (groundCheck.isGrounded) Jump();
             else if (wallCheck.wallDetected && !groundCheck.isGrounded) WallJump();
@@ -80,7 +76,10 @@ public class PlayerMovement : MonoBehaviour
         ApplyGravity();
     }
 
-    public void SetSlowMode(bool active) => isSlowModeActive = active;
+    public void SetSlowMode(bool active)
+    {
+        isSlowModeActive = active;
+    }
 
     private void Jump()
     {
@@ -107,47 +106,14 @@ public class PlayerMovement : MonoBehaviour
     
     void HandleMovement()
     {
-        // 1. Déterminer la direction voulue par le joueur
-        Vector3 inputDirection = (transform.right * inputX + transform.forward * inputZ).normalized;
-        
-        // 2. Séparer la vélocité horizontale actuelle (on ignore Y pour ne pas perturber les sauts/gravité)
-        Vector3 currentVelocity = rb.linearVelocity;
-        Vector3 currentHorizontal = new Vector3(currentVelocity.x, 0, currentVelocity.z);
-        
-        // 3. Calcul de la vitesse maximale ciblée (avec prise en compte du SlowMo)
-        float currentTopSpeed = topSpeed;
+        Vector3 moveDirection = (transform.right * inputX + transform.forward * inputZ).normalized;
+        float finalSpeed = speed;
+
         if (Time.timeScale < 1f) 
-            currentTopSpeed *= (playerSpeedPercentage / slowTimeScale);
-
-        Vector3 targetHorizontal = inputDirection * currentTopSpeed;
-
-        // 4. Déterminer quel taux d'accélération/décélération utiliser
-        float currentAccelRate;
-
-        if (!isMoving) 
         {
-            // Le joueur lâche le stick : Freinage naturel
-            currentAccelRate = deceleration; 
-        } 
-        else if (Vector3.Dot(currentHorizontal.normalized, inputDirection) < -0.1f) 
-        {
-            // Le joueur veut aller dans le sens inverse de son élan : Freinage brusque (Skid)
-            currentAccelRate = turnFriction; 
-        } 
-        else 
-        {
-            // Le joueur accélère normalement
-            currentAccelRate = acceleration; 
+            finalSpeed *= (playerSpeedPercentage / slowTimeScale);
         }
 
-        // Ajustement du taux d'accélération pour le mode ralenti
-        if (Time.timeScale < 1f) 
-            currentAccelRate *= (playerSpeedPercentage / slowTimeScale);
-
-        // 5. Appliquer l'inertie mathématiquement (MoveTowards rapproche doucement la vitesse actuelle de la cible)
-        Vector3 newHorizontal = Vector3.MoveTowards(currentHorizontal, targetHorizontal, currentAccelRate * Time.fixedDeltaTime);
-
-        // 6. Assigner la vélocité finale au Rigidbody
         if (IsSliding())
         {
             Vector3 slopeDirection = Vector3.ProjectOnPlane(Vector3.down, hitNormal).normalized;
@@ -155,7 +121,7 @@ public class PlayerMovement : MonoBehaviour
         }
         else
         {
-            rb.linearVelocity = new Vector3(newHorizontal.x, currentVelocity.y, newHorizontal.z);
+            rb.linearVelocity = new Vector3(moveDirection.x * finalSpeed, rb.linearVelocity.y, moveDirection.z * finalSpeed);
         }
     }
     
@@ -185,27 +151,42 @@ public class PlayerMovement : MonoBehaviour
 
     void ApplyTimeSlow()
     {
+        // On veut du slow si : Mode Orange ET Pas de fantôme ET Immobile
         bool shouldBeSlow = isSlowModeActive && !isGhostActive && !isMoving;
 
         if (shouldBeSlow != wasActuallySlow)
         {
-            float ratio = playerSpeedPercentage / slowTimeScale;
+            // On compte le temps réel écoulé (indépendant du TimeScale)
+            slowTransitionTimer += Time.unscaledDeltaTime;
 
-            if (shouldBeSlow)
+            // Si le changement d'état (immobile ou en mouvement) est maintenu assez longtemps
+            if (slowTransitionTimer >= slowApplyCD)
             {
-                Time.timeScale = slowTimeScale;
-                rb.linearVelocity *= ratio;
-            }
-            else
-            {
-                Time.timeScale = 1f;
-                rb.linearVelocity /= ratio;
-            }
+                float ratio = playerSpeedPercentage / slowTimeScale;
 
-            Time.fixedDeltaTime = 0.02f * Time.timeScale;
-            wasActuallySlow = shouldBeSlow;
+                if (shouldBeSlow)
+                {
+                    Time.timeScale = slowTimeScale;
+                    rb.linearVelocity *= ratio; // Évite la chute brusque
+                }
+                else
+                {
+                    Time.timeScale = 1f;
+                    rb.linearVelocity /= ratio; // Évite l'effet fusée
+                }
+
+                Time.fixedDeltaTime = 0.02f * Time.timeScale;
+                wasActuallySlow = shouldBeSlow;
+                slowTransitionTimer = 0f;
+            }
+        }
+        else
+        {
+            // Si le joueur recommence à bouger avant la fin du cooldown, on reset le timer
+            slowTransitionTimer = 0f;
         }
 
+        // Sécurité pour forcer le TimeScale actuel
         Time.timeScale = wasActuallySlow ? slowTimeScale : 1f;
         Time.fixedDeltaTime = 0.02f * Time.timeScale;
     }
@@ -218,7 +199,13 @@ public class PlayerMovement : MonoBehaviour
             hitNormal = Vector3.up;
     }
 
-    private bool IsSliding() => groundCheck.isGrounded && Vector3.Angle(Vector3.up, hitNormal) > slopeLimit;
+    private bool IsSliding()
+    {
+        return groundCheck.isGrounded && Vector3.Angle(Vector3.up, hitNormal) > slopeLimit;
+    }
     
-    public bool IsSlowModeActive() => wasActuallySlow;
+    public bool IsSlowModeActive()
+    {
+        return wasActuallySlow;
+    }
 }

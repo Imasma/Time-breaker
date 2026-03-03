@@ -294,145 +294,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4966713133860908830, guid: b7b1301ba98e4894c9b6d39242fa22fc, type: 3}
-      propertyPath: topSpeed
-      value: 6
-      objectReference: {fileID: 0}
-    - target: {fileID: 4966713133860908830, guid: b7b1301ba98e4894c9b6d39242fa22fc, type: 3}
-      propertyPath: jumpAction.m_Name
-      value: Jump
-      objectReference: {fileID: 0}
-    - target: {fileID: 4966713133860908830, guid: b7b1301ba98e4894c9b6d39242fa22fc, type: 3}
-      propertyPath: jumpAction.m_Type
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4966713133860908830, guid: b7b1301ba98e4894c9b6d39242fa22fc, type: 3}
-      propertyPath: jumpAction.m_Flags
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4966713133860908830, guid: b7b1301ba98e4894c9b6d39242fa22fc, type: 3}
-      propertyPath: jumpAction.m_ExpectedControlType
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 4966713133860908830, guid: b7b1301ba98e4894c9b6d39242fa22fc, type: 3}
-      propertyPath: jumpAction.m_SingletonActionBindings.Array.size
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 4966713133860908830, guid: b7b1301ba98e4894c9b6d39242fa22fc, type: 3}
-      propertyPath: jumpAction.m_SingletonActionBindings.Array.data[0].m_Id
-      value: b9d59a25-fc72-480e-ade4-8bc70010b329
-      objectReference: {fileID: 0}
-    - target: {fileID: 4966713133860908830, guid: b7b1301ba98e4894c9b6d39242fa22fc, type: 3}
-      propertyPath: jumpAction.m_SingletonActionBindings.Array.data[1].m_Id
-      value: 377b05c2-46fa-4b91-a12a-d626c796c757
-      objectReference: {fileID: 0}
-    - target: {fileID: 4966713133860908830, guid: b7b1301ba98e4894c9b6d39242fa22fc, type: 3}
-      propertyPath: jumpAction.m_SingletonActionBindings.Array.data[0].m_Path
-      value: <Keyboard>/space
-      objectReference: {fileID: 0}
-    - target: {fileID: 4966713133860908830, guid: b7b1301ba98e4894c9b6d39242fa22fc, type: 3}
-      propertyPath: jumpAction.m_SingletonActionBindings.Array.data[1].m_Path
-      value: <Gamepad>/buttonSouth
-      objectReference: {fileID: 0}
-    - target: {fileID: 4966713133860908830, guid: b7b1301ba98e4894c9b6d39242fa22fc, type: 3}
-      propertyPath: jumpAction.m_SingletonActionBindings.Array.data[0].m_Action
-      value: Jump
-      objectReference: {fileID: 0}
-    - target: {fileID: 4966713133860908830, guid: b7b1301ba98e4894c9b6d39242fa22fc, type: 3}
-      propertyPath: jumpAction.m_SingletonActionBindings.Array.data[1].m_Action
-      value: Jump
-      objectReference: {fileID: 0}
     - target: {fileID: 6234128663362313003, guid: b7b1301ba98e4894c9b6d39242fa22fc, type: 3}
       propertyPath: m_Name
       value: PlayerComp
       objectReference: {fileID: 0}
     - target: {fileID: 9156033535460788796, guid: b7b1301ba98e4894c9b6d39242fa22fc, type: 3}
-      propertyPath: placeCloneAction.m_SingletonActionBindings.Array.size
-      value: 2
+      propertyPath: cloneLifeDuration
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9156033535460788796, guid: b7b1301ba98e4894c9b6d39242fa22fc, type: 3}
-      propertyPath: toggleModeAction.m_SingletonActionBindings.Array.size
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 9156033535460788796, guid: b7b1301ba98e4894c9b6d39242fa22fc, type: 3}
-      propertyPath: placeCloneAction.m_SingletonActionBindings.Array.data[1].m_Id
-      value: ac728c19-4f7a-400c-8630-bef9ee99b4a1
-      objectReference: {fileID: 0}
-    - target: {fileID: 9156033535460788796, guid: b7b1301ba98e4894c9b6d39242fa22fc, type: 3}
-      propertyPath: toggleModeAction.m_SingletonActionBindings.Array.data[1].m_Id
-      value: aa003705-dcd5-46b0-bf15-3ccd35e72b5a
-      objectReference: {fileID: 0}
-    - target: {fileID: 9156033535460788796, guid: b7b1301ba98e4894c9b6d39242fa22fc, type: 3}
-      propertyPath: toggleModeAction.m_SingletonActionBindings.Array.data[2].m_Id
-      value: abdb4ce5-61d5-4e96-91c0-0944dfd2f7c8
-      objectReference: {fileID: 0}
-    - target: {fileID: 9156033535460788796, guid: b7b1301ba98e4894c9b6d39242fa22fc, type: 3}
-      propertyPath: toggleModeAction.m_SingletonActionBindings.Array.data[3].m_Id
-      value: 9e81f544-dde8-4136-8f13-cd908aadc95b
-      objectReference: {fileID: 0}
-    - target: {fileID: 9156033535460788796, guid: b7b1301ba98e4894c9b6d39242fa22fc, type: 3}
-      propertyPath: placeCloneAction.m_SingletonActionBindings.Array.data[1].m_Path
-      value: <Gamepad>/rightTrigger
-      objectReference: {fileID: 0}
-    - target: {fileID: 9156033535460788796, guid: b7b1301ba98e4894c9b6d39242fa22fc, type: 3}
-      propertyPath: toggleModeAction.m_SingletonActionBindings.Array.data[1].m_Name
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 9156033535460788796, guid: b7b1301ba98e4894c9b6d39242fa22fc, type: 3}
-      propertyPath: toggleModeAction.m_SingletonActionBindings.Array.data[1].m_Path
-      value: <Gamepad>/leftTrigger
-      objectReference: {fileID: 0}
-    - target: {fileID: 9156033535460788796, guid: b7b1301ba98e4894c9b6d39242fa22fc, type: 3}
-      propertyPath: toggleModeAction.m_SingletonActionBindings.Array.data[2].m_Name
-      value: negative
-      objectReference: {fileID: 0}
-    - target: {fileID: 9156033535460788796, guid: b7b1301ba98e4894c9b6d39242fa22fc, type: 3}
-      propertyPath: toggleModeAction.m_SingletonActionBindings.Array.data[2].m_Path
-      value: <Gamepad>/leftTrigger
-      objectReference: {fileID: 0}
-    - target: {fileID: 9156033535460788796, guid: b7b1301ba98e4894c9b6d39242fa22fc, type: 3}
-      propertyPath: toggleModeAction.m_SingletonActionBindings.Array.data[3].m_Name
-      value: positive
-      objectReference: {fileID: 0}
-    - target: {fileID: 9156033535460788796, guid: b7b1301ba98e4894c9b6d39242fa22fc, type: 3}
-      propertyPath: toggleModeAction.m_SingletonActionBindings.Array.data[3].m_Path
-      value: <Gamepad>/leftTrigger
-      objectReference: {fileID: 0}
-    - target: {fileID: 9156033535460788796, guid: b7b1301ba98e4894c9b6d39242fa22fc, type: 3}
-      propertyPath: toggleModeAction.m_SingletonActionBindings.Array.data[1].m_Flags
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9156033535460788796, guid: b7b1301ba98e4894c9b6d39242fa22fc, type: 3}
-      propertyPath: toggleModeAction.m_SingletonActionBindings.Array.data[2].m_Flags
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 9156033535460788796, guid: b7b1301ba98e4894c9b6d39242fa22fc, type: 3}
-      propertyPath: toggleModeAction.m_SingletonActionBindings.Array.data[3].m_Flags
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 9156033535460788796, guid: b7b1301ba98e4894c9b6d39242fa22fc, type: 3}
-      propertyPath: placeCloneAction.m_SingletonActionBindings.Array.data[1].m_Action
-      value: Place Clone
-      objectReference: {fileID: 0}
-    - target: {fileID: 9156033535460788796, guid: b7b1301ba98e4894c9b6d39242fa22fc, type: 3}
-      propertyPath: toggleModeAction.m_SingletonActionBindings.Array.data[1].m_Action
-      value: Toggle Mode
-      objectReference: {fileID: 0}
-    - target: {fileID: 9156033535460788796, guid: b7b1301ba98e4894c9b6d39242fa22fc, type: 3}
-      propertyPath: toggleModeAction.m_SingletonActionBindings.Array.data[2].m_Action
-      value: Toggle Mode
-      objectReference: {fileID: 0}
-    - target: {fileID: 9156033535460788796, guid: b7b1301ba98e4894c9b6d39242fa22fc, type: 3}
-      propertyPath: toggleModeAction.m_SingletonActionBindings.Array.data[3].m_Action
-      value: Toggle Mode
-      objectReference: {fileID: 0}
-    - target: {fileID: 9156033535460788796, guid: b7b1301ba98e4894c9b6d39242fa22fc, type: 3}
-      propertyPath: placeCloneAction.m_SingletonActionBindings.Array.data[1].m_Interactions
-      value: Press
-      objectReference: {fileID: 0}
-    - target: {fileID: 9156033535460788796, guid: b7b1301ba98e4894c9b6d39242fa22fc, type: 3}
-      propertyPath: toggleModeAction.m_SingletonActionBindings.Array.data[1].m_Interactions
-      value: Press
+      propertyPath: secondCloneLifetime
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
