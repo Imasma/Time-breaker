@@ -12,6 +12,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: LD_Vide
       objectReference: {fileID: 0}
+    - target: {fileID: 6187112662388170694, guid: f765d91476fc67545adb6ccac581830e, type: 3}
+      propertyPath: m_Icon
+      value: 
+      objectReference: {fileID: -964228994112308473, guid: 0000000000000000d000000000000000, type: 0}
+    - target: {fileID: 6187112662388170694, guid: f765d91476fc67545adb6ccac581830e, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6690733913183946294, guid: f765d91476fc67545adb6ccac581830e, type: 3}
       propertyPath: m_LocalPosition.x
       value: -9.746445
