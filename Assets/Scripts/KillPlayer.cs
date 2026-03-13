@@ -4,6 +4,16 @@ public class KillPlayer : MonoBehaviour
 {
     [Tooltip("Sera rempli automatiquement au Start si un objet a le tag 'Respawn Point'")]
     public Transform respawnPoint;
+    public Cheat Cheat;
+    private void Awake()
+    {
+        // On trouve l'objet avec le tag "Player", puis on récupère son script Cheat
+        GameObject player = GameObject.FindWithTag("Player");
+        if (player != null)
+        {
+            Cheat = player.GetComponent<Cheat>();
+        }
+    }
 
     private void Start()
     {
@@ -21,7 +31,7 @@ public class KillPlayer : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player") && respawnPoint != null)
+        if (other.CompareTag("Player") && respawnPoint != null && Cheat.godMode == false)
         {
             // Téléportation
             other.transform.position = respawnPoint.position;
