@@ -237,7 +237,7 @@ MonoBehaviour:
   normalOffset: {x: 0, y: 2, z: -10}
   slowModeOffset: {x: 0, y: 2, z: -15}
   smoothTime: 0.25
-  offsetTransitionSpeed: 5
+  offsetTransitionSpeed: 1
   timer: 0.25
 --- !u!114 &5583731451542214559
 MonoBehaviour:
@@ -743,7 +743,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53db078039ada2f4589947b07ffd2a59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WallDetection
-  wallRayLength: 0.5
+  wallRayLength: 0.15
   wallRayOffSet: 0.1
   wallDetected: 0
   wallDirection: 0
@@ -763,37 +763,11 @@ MonoBehaviour:
   replacementPrefab: {fileID: 6126193903743271350, guid: 17bc1f061bf9ff24daf1d370b1e8a11d, type: 3}
   playerRenderer: {fileID: 7948597571088407310}
   trailRenderer: {fileID: 3408195566335641927}
-  normalMaterial: {fileID: 2100000, guid: d37383911053d364981641a79098d3bf, type: 2}
-  normalTrailMaterial: {fileID: 2100000, guid: d77999568c2a0dd48bc11da4de8c10b9, type: 2}
-  ghostActiveMaterial: {fileID: 2100000, guid: e845200705a44a04f853ec0c98a8f356, type: 2}
-  ghostActiveTrailMaterial: {fileID: 2100000, guid: 69215ffe7ed166a428dfa11e34027882, type: 2}
+  activeMaterial: {fileID: 2100000, guid: d37383911053d364981641a79098d3bf, type: 2}
+  activeTrailMaterial: {fileID: 2100000, guid: d77999568c2a0dd48bc11da4de8c10b9, type: 2}
   maxRecordedPositions: 150
+  ghostDelayInFrames: 50
   cloneLifeDuration: 1
-  toggleModeAction:
-    m_Name: Toggle Mode
-    m_Type: 0
-    m_ExpectedControlType: 
-    m_Id: 7fa92194-d37c-4064-8a2f-52c5657ab0ef
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings:
-    - m_Name: 
-      m_Id: 7131934a-3927-42aa-90c5-a21c7a74fa6b
-      m_Path: <Keyboard>/e
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: Toggle Mode
-      m_Flags: 0
-    - m_Name: 
-      m_Id: aa003705-dcd5-46b0-bf15-3ccd35e72b5a
-      m_Path: <Gamepad>/leftTrigger
-      m_Interactions: Press
-      m_Processors: 
-      m_Groups: 
-      m_Action: Toggle Mode
-      m_Flags: 0
-    m_Flags: 0
   placeCloneAction:
     m_Name: Place Clone
     m_Type: 0
