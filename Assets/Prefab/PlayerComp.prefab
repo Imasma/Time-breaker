@@ -460,6 +460,7 @@ GameObject:
   - component: {fileID: 6241953448023499574}
   - component: {fileID: 4131525704634234421}
   - component: {fileID: 9156033535460788796}
+  - component: {fileID: 7774054601582360614}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -529,7 +530,7 @@ Rigidbody:
   m_ImplicitTensor: 1
   m_UseGravity: 1
   m_IsKinematic: 0
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_Constraints: 8
   m_CollisionDetection: 0
 --- !u!96 &3408195566335641927
@@ -816,5 +817,43 @@ MonoBehaviour:
       m_Processors: 
       m_Groups: 
       m_Action: Place Clone
+      m_Flags: 0
+    m_Flags: 0
+--- !u!114 &7774054601582360614
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8941407511240436085}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 35f1271173c0afe47a3d2dc9bcabe85e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Cheat
+  godMode: 0
+  godModeAction:
+    m_Name: God Mode
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 0f393e5d-1815-4aa3-88c3-863733d274e7
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings:
+    - m_Name: 
+      m_Id: c998ddf3-88f7-4eb8-b4bc-2db939c75797
+      m_Path: <Keyboard>/numpad1
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: God Mode
+      m_Flags: 0
+    - m_Name: 
+      m_Id: 19c1c85c-3cfe-4512-8f52-d9a4611d5ff8
+      m_Path: <Keyboard>/1
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: God Mode
       m_Flags: 0
     m_Flags: 0
