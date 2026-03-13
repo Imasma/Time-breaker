@@ -186,13 +186,14 @@ public class PlayerMovement : MonoBehaviour
     void ApplyTimeSlow()
     {
         bool shouldBeSlow = isSlowModeActive && !isGhostActive && !isMoving;
-
         if (shouldBeSlow != wasActuallySlow)
         {
             float ratio = playerSpeedPercentage / slowTimeScale;
 
             if (shouldBeSlow)
             {
+                Debug.Log("isSlow");
+
                 Time.timeScale = slowTimeScale;
                 rb.linearVelocity *= ratio;
             }
@@ -222,3 +223,6 @@ public class PlayerMovement : MonoBehaviour
     
     public bool IsSlowModeActive() => wasActuallySlow;
 }
+
+
+

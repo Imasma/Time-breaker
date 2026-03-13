@@ -11,111 +11,81 @@ public class ModesGestion : MonoBehaviour
     [Header("Player Visuals")]
     public Renderer playerRenderer;      
     public Renderer trailRenderer;      
-    public Material normalMaterial;    
-    public Material normalTrailMaterial; 
-    public Material ghostActiveMaterial; 
-    public Material ghostActiveTrailMaterial; 
+    public Material activeMaterial;    
+    public Material activeTrailMaterial; 
 
     [Header("Settings")]
     public int maxRecordedPositions = 300; 
-    [Tooltip("Temps avant que le premier clone ne disparaisse quand un deuxième est créé")]
-    public float cloneLifeDuration = 7f; // <--- MODIFIABLE DANS L'INSPECTEUR
+    [Tooltip("Nombre de frames de décalage entre le joueur et le fantôme (50 = env. 1 seconde)")]
+    public int ghostDelayInFrames = 50; // <--- LE DÉLAI EST ICI
+    public float cloneLifeDuration = 7f;
 
     [Header("Input")]
-    public InputAction toggleModeAction; 
     public InputAction placeCloneAction;  
 
     private List<Vector3> recordedPositions = new List<Vector3>();
     private List<GameObject> activeClones = new List<GameObject>(); 
     private GameObject activeGhost;      
-    private bool isGhostDeployed = false;
 
     private PlayerMovement playerMovement;
 
     private void Awake()
     {
         playerMovement = GetComponent<PlayerMovement>();
+        
+        if (playerRenderer != null) playerRenderer.material = activeMaterial;
+        if (trailRenderer != null) trailRenderer.material = activeTrailMaterial;
+    }
+
+    private void Start()
+    {
+        // 1. On pré-remplit la liste avec la position actuelle
+        for (int i = 0; i < ghostDelayInFrames; i++)
+        {
+            recordedPositions.Add(transform.position);
+        }
+        
+        // 2. On spawn le fantôme à la position actuelle
+        activeGhost = Instantiate(transparentGhostPrefab, transform.position, Quaternion.identity);
+        
+        // 3. On lui donne la liste (il commencera à l'index 0, là où on a mis les positions immobiles)
+        activeGhost.GetComponentInChildren<Ghost>().SetPathReference(recordedPositions);
+
+        if (playerMovement != null) {
+            playerMovement.isGhostActive = false; 
+        }
     }
 
     private void OnEnable()
     {
-        toggleModeAction.Enable();
         placeCloneAction.Enable();
-        toggleModeAction.performed += _ => OnToggleMode();
         placeCloneAction.performed += _ => OnPlaceClone();
     }
 
     private void OnDisable()
     {
-        toggleModeAction.Disable();
         placeCloneAction.Disable();
-        toggleModeAction.performed -= _ => OnToggleMode();
         placeCloneAction.performed -= _ => OnPlaceClone();
     }
 
     void FixedUpdate()
     {
+        // Enregistrement permanent
         recordedPositions.Add(transform.position);
-        if (!isGhostDeployed && recordedPositions.Count > maxRecordedPositions)
+        
+        // On garde toujours le nombre maximum de positions (buffer + historique)
+        if (recordedPositions.Count > (maxRecordedPositions + ghostDelayInFrames))
         {
             recordedPositions.RemoveAt(0);
         }
     }
 
-    private void OnToggleMode()
-    {
-        if (!isGhostDeployed) EnterBlueMode();
-        else ExitBlueMode();
-    }
-
-    private void EnterBlueMode()
-    {
-        if (recordedPositions.Count == 0) return;
-
-        // SÉCURITÉ : Détruit le fantôme précédent s'il existe pour éviter les doublons
-        if (activeGhost != null) Destroy(activeGhost);
-
-        activeGhost = Instantiate(transparentGhostPrefab, recordedPositions[0], Quaternion.identity);
-        activeGhost.GetComponentInChildren<Ghost>().SetPathReference(recordedPositions);
-        isGhostDeployed = true;
-
-        if (playerMovement != null) {
-            playerMovement.isGhostActive = true; 
-            playerMovement.SetSlowMode(false); 
-        }
-
-        if (playerRenderer != null) playerRenderer.material = ghostActiveMaterial; 
-        if (trailRenderer != null) trailRenderer.material = ghostActiveTrailMaterial; 
-    }
-
-    private void ExitBlueMode()
-    {
-        if (activeGhost != null) Destroy(activeGhost);
-        
-        foreach (GameObject clone in activeClones) {
-            if (clone != null) Destroy(clone);
-        }
-        activeClones.Clear();
-
-        recordedPositions.Clear();
-        isGhostDeployed = false;
-
-        if (playerMovement != null) {
-            playerMovement.isGhostActive = false; 
-            playerMovement.SetSlowMode(true); 
-        }
-
-        if (playerRenderer != null) playerRenderer.material = normalMaterial; 
-        if (trailRenderer != null) trailRenderer.material = normalTrailMaterial; 
-    }
-
     private void OnPlaceClone()
     {
-        if (!isGhostDeployed || activeGhost == null)
-            return;
+        if (activeGhost == null) return;
 
         Ghost movingGhost = activeGhost.GetComponentInChildren<Ghost>();
-
+        
         GameObject newClone = Instantiate(
             replacementPrefab,
             movingGhost.transform.position,
@@ -124,26 +94,18 @@ public class ModesGestion : MonoBehaviour
 
         activeClones.Add(newClone);
 
-        // Si on a maintenant PLUS de 2 clones → on détruit immédiatement le plus ancien
         if (activeClones.Count > 2)
         {
             GameObject oldest = activeClones[0];
             activeClones.RemoveAt(0);
-
-            if (oldest != null)
-                Destroy(oldest);
+            if (oldest != null) Destroy(oldest);
         }
 
-        // Si on a EXACTEMENT 2 clones → on lance le timer sur le PLUS ANCIEN
         if (activeClones.Count == 2)
         {
             GameObject oldest = activeClones[0];
-
             SolidClone sc = oldest.GetComponentInChildren<SolidClone>();
-            if (sc != null)
-            {
-                sc.StartLifeTimer(cloneLifeDuration);
-            }
+            if (sc != null) sc.StartLifeTimer(cloneLifeDuration);
         }
     }
 
