@@ -7,13 +7,11 @@ namespace FMODUnity
     [CanEditMultipleObjects]
     public class StudioListenerEditor : Editor
     {
-        private SerializedProperty attenuationObject;
-        private SerializedProperty nonRigidbodyVelocity;
+        public SerializedProperty attenuationObject;
 
         private void OnEnable()
         {
             attenuationObject = serializedObject.FindProperty("attenuationObject");
-            nonRigidbodyVelocity = serializedObject.FindProperty("nonRigidbodyVelocity");
         }
 
         public override void OnInspectorGUI()
@@ -25,7 +23,6 @@ namespace FMODUnity
             EditorGUI.EndDisabledGroup();
 
             EditorGUILayout.PropertyField(attenuationObject);
-            EditorGUILayout.PropertyField(nonRigidbodyVelocity, new GUIContent("Non-Rigidbody Velocity"));
             serializedObject.ApplyModifiedProperties();
         }
     }

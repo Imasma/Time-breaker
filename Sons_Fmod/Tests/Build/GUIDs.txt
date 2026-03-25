@@ -1,0 +1,5 @@
+{71129eb8-b85a-4f30-bea7-bff7c5e54c31} bank:/Master
+{e90fbe6c-c921-0372-38ee-350934164aa9} bank:/Master.strings
+{07de0dc3-87c9-4822-bff7-1d81308d31fa} bus:/
+{37217f16-2e42-4df6-978a-82876c8a7b1b} bus:/Reverb
+{76f3d71c-3b71-4ab6-a41a-22d9442f4541} event:/Collision

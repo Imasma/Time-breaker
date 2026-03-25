@@ -431,15 +431,8 @@ namespace FMODUnity
             if (rigidbody)
             {
                 FMOD.VECTOR vel;
-#if UNITY_6000_1_OR_NEWER
                 vel.x = rigidbody.linearVelocity.x;
                 vel.y = rigidbody.linearVelocity.y;
-#else
-#pragma warning disable CS0618
-                vel.x = rigidbody.velocity.x;
-                vel.y = rigidbody.velocity.y;
-#pragma warning restore CS0618
-#endif
                 vel.z = 0;
                 attributes.velocity = vel;
             }
@@ -455,15 +448,8 @@ namespace FMODUnity
             if (rigidbody)
             {
                 FMOD.VECTOR vel;
-#if UNITY_6000_1_OR_NEWER
                 vel.x = rigidbody.linearVelocity.x;
                 vel.y = rigidbody.linearVelocity.y;
-#else
-#pragma warning disable CS0618
-                vel.x = rigidbody.velocity.x;
-                vel.y = rigidbody.velocity.y;
-#pragma warning restore CS0618
-#endif
                 vel.z = 0;
                 attributes.velocity = vel;
             }
@@ -608,21 +594,6 @@ namespace FMODUnity
             if (!Settings.IsInitialized() || Settings.Instance.LoggingLevel >= FMOD.DEBUG_FLAGS.ERROR)
             {
                 Debug.LogException(e);
-            }
-        }
-
-        public static string GetPluginArchitectureFolder()
-        {
-            switch (System.Runtime.InteropServices.RuntimeInformation.ProcessArchitecture)
-            {
-                case System.Runtime.InteropServices.Architecture.Arm:
-                    throw new System.NotSupportedException("[FMOD] Attempted to load FMOD plugins on a 32 bit ARM platform.");
-                case System.Runtime.InteropServices.Architecture.Arm64:
-                    return "arm64";
-                case System.Runtime.InteropServices.Architecture.X86:
-                    return "x86";
-                default:
-                    return "x86_64";
             }
         }
 

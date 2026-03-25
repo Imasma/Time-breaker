@@ -179,7 +179,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MovingPlatformStay
   playerTag: Player
-  platform: {fileID: 428253992649358}
 --- !u!1 &1552760887611366300
 GameObject:
   m_ObjectHideFlags: 0
@@ -352,7 +351,7 @@ Transform:
   m_GameObject: {fileID: 4064708426737749455}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1.6492798, y: -0.5, z: 0.2065258}
+  m_LocalPosition: {x: -1.8, y: -0.5, z: 0.2065258}
   m_LocalScale: {x: 5.0338373, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

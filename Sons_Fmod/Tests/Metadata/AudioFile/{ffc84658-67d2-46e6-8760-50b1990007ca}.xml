@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.03.00">
+	<object class="AudioFile" id="{ffc84658-67d2-46e6-8760-50b1990007ca}">
+		<property name="assetPath">
+			<value>Amethyst Step 1.mp3</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>48</value>
+		</property>
+		<property name="channelCount">
+			<value>1</value>
+		</property>
+		<property name="length">
+			<value>2.8559999999999999</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{e66f2b68-aeb2-460c-99e2-2969e744abca}</destination>
+		</relationship>
+	</object>
+</objects>
