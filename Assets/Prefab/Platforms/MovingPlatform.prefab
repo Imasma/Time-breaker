@@ -334,7 +334,6 @@ GameObject:
   - component: {fileID: 6518976046879253337}
   - component: {fileID: 8764817287368835114}
   - component: {fileID: 2036180853847949576}
-  - component: {fileID: 2473707206882973737}
   m_Layer: 6
   m_Name: MovingPlatGround
   m_TagString: Ground
@@ -438,21 +437,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &2473707206882973737
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4064708426737749455}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c6ee8d154053cd943b7b09b7576d7a55, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MovingPlatforms
-  startPoint: {fileID: 5963390059824245450}
-  endPoint: {fileID: 8462684708273162475}
-  speed: 0.1
 --- !u!1 &6603381634156393103
 GameObject:
   m_ObjectHideFlags: 0
@@ -493,6 +477,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3914895493231748772}
+  - component: {fileID: 5368033918698446877}
   m_Layer: 0
   m_Name: MovingPlatform
   m_TagString: Untagged
@@ -518,3 +503,19 @@ Transform:
   - {fileID: 428253992649358}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5368033918698446877
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7227962128667868839}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6ee8d154053cd943b7b09b7576d7a55, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MovingPlatforms
+  startPoint: {fileID: 5963390059824245450}
+  endPoint: {fileID: 8462684708273162475}
+  GroundGO: {fileID: 4064708426737749455}
+  speed: 1

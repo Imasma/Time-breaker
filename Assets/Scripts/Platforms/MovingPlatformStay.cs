@@ -10,16 +10,12 @@ public class MovingPlatformStay : MonoBehaviour
     // On utilise FixedUpdate car on manipule la physique (Rigidbody)
     private void FixedUpdate()
     {
-        // Si le joueur est sur la plateforme
-        if (playerRb != null)
-        {
-            // 1. On calcule la distance parcourue par la plateforme depuis la frame précédente
-            Vector3 platformMovement = transform.position - previousPlatformPosition;
+        
+        // 1. On calcule la distance parcourue par la plateforme depuis la frame précédente
+        Vector3 platformMovement = transform.position - previousPlatformPosition;
             
-            // 2. On "téléporte" fluidement le joueur de cette même distance
-            // Ça ne rentre pas en conflit avec sa vélocité !
-            playerRb.MovePosition(playerRb.position + platformMovement);
-        }
+        // 2. On "téléporte" fluidement le joueur de cette même distance
+        playerRb.MovePosition(playerRb.position + platformMovement);
         
         // On met à jour l'ancienne position pour la prochaine frame
         previousPlatformPosition = transform.position;

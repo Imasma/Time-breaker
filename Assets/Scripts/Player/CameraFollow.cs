@@ -23,16 +23,12 @@ public class CameraFollow : MonoBehaviour
     void Start()
     {
         currentOffset = normalOffset;
-        if (target != null)
-        {
-            playerScript = target.GetComponent<PlayerMovement>();
-        }
+        playerScript = target.GetComponent<PlayerMovement>();
+        
     }
 
     void LateUpdate()
     {
-        if (target == null) return;
-
         // --- LIAISON AVEC LE TIME MANAGER ---
         float currentCustomTimeScale = (TimeManager.Instance != null) ? TimeManager.Instance.customTimeScale : 1f;
         float customDeltaTime = Time.deltaTime * currentCustomTimeScale;
