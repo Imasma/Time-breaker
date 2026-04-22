@@ -3534,10 +3534,6 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2459488018316516277, guid: 95cf1a4b3776aab4c966d4dc9490e815, type: 3}
-      propertyPath: m_Icon
-      value: 
-      objectReference: {fileID: 2974397684917235467, guid: 0000000000000000d000000000000000, type: 0}
-    - target: {fileID: 2459488018316516277, guid: 95cf1a4b3776aab4c966d4dc9490e815, type: 3}
       propertyPath: m_Name
       value: Checkpoint
       objectReference: {fileID: 0}

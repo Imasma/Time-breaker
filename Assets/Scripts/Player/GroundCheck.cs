@@ -51,9 +51,10 @@ public class GroundCheck : MonoBehaviour
         RaycastHit hit;
         Debug.DrawRay(origin, direction * distance, Color.red);
 
-        if (Physics.Raycast(origin, direction, out hit, distance))
+        // On ajoute 'Physics.DefaultRaycastLayers' (pour toucher tous les layers) 
+        // et 'QueryTriggerInteraction.Ignore' pour traverser les Triggers
+        if (Physics.Raycast(origin, direction, out hit, distance, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
         {
-            // MODIFICATION : On vérifie si c'est le Sol OU un Clone
             if (hit.collider.CompareTag("Ground") || hit.collider.CompareTag("Clone"))
             {
                 Debug.DrawRay(hit.point, hit.normal, Color.yellow);

@@ -4,26 +4,24 @@ public class BulletSpawn : MonoBehaviour
 {   
     [SerializeField] private float cooldown = 2f;
     private float t;
-    [SerializeField] private GameObject bulletGO;
+    [SerializeField] private GameObject bulletGO; // Ton prefab (Balle ou Plateforme)
     [SerializeField] private Transform bulletSpawn; 
     [SerializeField] private Transform respawnPoint; 
     
     [SerializeField] private float bulletSpeed = 20f;
-    [SerializeField] private float bulletLife = 2f;
+    
+    [Header("Platformes")]
+    public float speed;
     
     private void Start()
     {
-        
-        // On cherche l'objet qui possède le tag exact
-        GameObject foundRespawn = GameObject.FindWithTag("Respawn Point");
-
-        if (foundRespawn != null)
-        { 
-            respawnPoint = foundRespawn.transform;
+        if (respawnPoint == null)
+        {
+            GameObject foundRespawn = GameObject.FindWithTag("Respawn Point");
+            if (foundRespawn != null) respawnPoint = foundRespawn.transform;
         }
-
-        
     }
+
     void Update()
     {
         t -= Time.deltaTime;
@@ -36,22 +34,27 @@ public class BulletSpawn : MonoBehaviour
 
     private void SpawnBullet()
     {
-        // 1. On crée la balle
-        GameObject newBullet = Instantiate(bulletGO, bulletSpawn.transform.position, bulletSpawn.transform.rotation);
+        // 1. Création de l'objet (Balle, Plateforme, etc.)
+        GameObject newBullet = Instantiate(bulletGO, bulletSpawn.position, bulletSpawn.rotation);
         
-        // récupère le script BulletKill sur la balle qu'on vient de créer
-        BulletKill bulletScript = newBullet.GetComponent<BulletKill>();
+        // 2. MODIFICATION : On vérifie si l'objet est une "Balle tueuse" (BulletKill)
+        // TryGetComponent permet d'éviter l'erreur si le script est absent
+        if (newBullet.TryGetComponent<BulletKill>(out BulletKill bulletScript))
+        {
+            bulletScript.respawnPoint = this.respawnPoint;
+        }
+        else if (newBullet.TryGetComponent<ShootPlatforme>(out ShootPlatforme shootPlatformeScript))
+        {
+            shootPlatformeScript.speed = this.speed;
+        }
         
-        //assigne le respawn point
-        bulletScript.respawnPoint = this.respawnPoint;
-        
-        // gère la physique
+        // 3. Gestion de la physique
         Rigidbody rb = newBullet.GetComponent<Rigidbody>();
         if (rb != null)
         {
-            rb.linearVelocity = bulletSpawn.transform.forward * bulletSpeed;
+            rb.linearVelocity = bulletSpawn.forward * bulletSpeed;
         }
         
-        Destroy(newBullet, bulletLife); 
+        // 4. Destruction
     }
 }

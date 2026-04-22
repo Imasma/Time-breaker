@@ -7,10 +7,10 @@ public class PlayerMovement : MonoBehaviour
     public InputAction jumpAction; 
 
     [Header("Movement (Sonic Momentum)")]
-    [SerializeField] private float topSpeed = 12f;      // Vitesse maximale
-    [SerializeField] private float acceleration = 15f;  // Vitesse à laquelle on atteint le Top Speed
-    [SerializeField] private float deceleration = 25f;  // Vitesse de freinage quand on lâche le stick
-    [SerializeField] private float turnFriction = 40f;  // Force de freinage quand on fait un demi-tour brusque (Skid)
+    [SerializeField] private float topSpeed = 12f;      
+    [SerializeField] private float acceleration = 15f;  
+    [SerializeField] private float deceleration = 25f;  
+    [SerializeField] private float turnFriction = 40f;  
     [SerializeField] private float gravityMultiplier = 2f;
     [SerializeField] private float jumpForce = 7f;
     private bool isMoving; 
@@ -31,13 +31,16 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float wallSlideMaxSpeed = 2f; 
     
     [Header("Slow System (Mode Slow)")]
-    [SerializeField] private float slowTimeScale = 0.1f;
-    [Range(0.1f, 1f)]
-    [SerializeField] private float playerSpeedPercentage = 0.6f; 
+    [Range(0.1f, 1f)] [SerializeField] private float slowTimeScale = 0.25f;
+    [Range(0.1f, 1f)] [SerializeField] private float playerSpeedPercentage = 0.2f; 
     
     [Header("Slow Motion Physics Tweaks")]
     [SerializeField] private float slowJumpBoost = 1f;
     [SerializeField] private float slowGravityBoost = 1f;
+
+    [Header("Platforms")] // NOUVEAU : Réglages pour les plateformes
+    [SerializeField] private string movingPlatformTag = "MovingPlatform";
+    private MovingPlatformStay currentPlatform;
 
     private bool isSlowModeActive = true; 
     private bool wasActuallySlow = false;
@@ -78,6 +81,12 @@ public class PlayerMovement : MonoBehaviour
         CheckSlope();
         HandleMovement();
         ApplyGravity();
+
+        // NOUVEAU : On applique le mouvement de la plateforme à la fin
+        if (currentPlatform != null)
+        {
+            rb.MovePosition(rb.position + currentPlatform.PlatformMovement);
+        }
     }
 
     public void SetSlowMode(bool active) => isSlowModeActive = active;
@@ -107,47 +116,37 @@ public class PlayerMovement : MonoBehaviour
     
     void HandleMovement()
     {
-        // 1. Déterminer la direction voulue par le joueur
         Vector3 inputDirection = (transform.right * inputX + transform.forward * inputZ).normalized;
         
-        // 2. Séparer la vélocité horizontale actuelle (on ignore Y pour ne pas perturber les sauts/gravité)
         Vector3 currentVelocity = rb.linearVelocity;
         Vector3 currentHorizontal = new Vector3(currentVelocity.x, 0, currentVelocity.z);
         
-        // 3. Calcul de la vitesse maximale ciblée (avec prise en compte du SlowMo)
         float currentTopSpeed = topSpeed;
         if (Time.timeScale < 1f) 
             currentTopSpeed *= (playerSpeedPercentage / slowTimeScale);
 
         Vector3 targetHorizontal = inputDirection * currentTopSpeed;
 
-        // 4. Déterminer quel taux d'accélération/décélération utiliser
         float currentAccelRate;
 
         if (!isMoving) 
         {
-            // Le joueur lâche le stick : Freinage naturel
             currentAccelRate = deceleration; 
         } 
         else if (Vector3.Dot(currentHorizontal.normalized, inputDirection) < -0.1f) 
         {
-            // Le joueur veut aller dans le sens inverse de son élan : Freinage brusque (Skid)
             currentAccelRate = turnFriction; 
         } 
         else 
         {
-            // Le joueur accélère normalement
             currentAccelRate = acceleration; 
         }
 
-        // Ajustement du taux d'accélération pour le mode ralenti
         if (Time.timeScale < 1f) 
             currentAccelRate *= (playerSpeedPercentage / slowTimeScale);
 
-        // 5. Appliquer l'inertie mathématiquement (MoveTowards rapproche doucement la vitesse actuelle de la cible)
         Vector3 newHorizontal = Vector3.MoveTowards(currentHorizontal, targetHorizontal, currentAccelRate * Time.fixedDeltaTime);
 
-        // 6. Assigner la vélocité finale au Rigidbody
         if (IsSliding())
         {
             Vector3 slopeDirection = Vector3.ProjectOnPlane(Vector3.down, hitNormal).normalized;
@@ -192,8 +191,6 @@ public class PlayerMovement : MonoBehaviour
 
             if (shouldBeSlow)
             {
-                Debug.Log("isSlow");
-
                 Time.timeScale = slowTimeScale;
                 rb.linearVelocity *= ratio;
             }
@@ -222,7 +219,22 @@ public class PlayerMovement : MonoBehaviour
     private bool IsSliding() => groundCheck.isGrounded && Vector3.Angle(Vector3.up, hitNormal) > slopeLimit;
     
     public bool IsSlowModeActive() => wasActuallySlow;
+
+    // NOUVEAU : Détection de l'entrée sur la plateforme
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag(movingPlatformTag))
+        {
+            currentPlatform = other.GetComponent<MovingPlatformStay>();
+        }
+    }
+
+    // NOUVEAU : Détection de la sortie de la plateforme
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag(movingPlatformTag))
+        {
+            currentPlatform = null;
+        }
+    }
 }
-
-
-

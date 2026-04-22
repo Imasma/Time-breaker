@@ -103,7 +103,8 @@ GameObject:
   - component: {fileID: 3326901327454760203}
   - component: {fileID: 522968822575272612}
   - component: {fileID: 5583731451542214559}
-  - component: {fileID: 3932435702752715556}
+  - component: {fileID: 2457551107595722528}
+  - component: {fileID: 6502695356678060721}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -237,8 +238,8 @@ MonoBehaviour:
   normalOffset: {x: 0, y: 2, z: -10}
   slowModeOffset: {x: 0, y: 2, z: -15}
   smoothTime: 0.25
-  offsetTransitionSpeed: 1
-  timer: 0.25
+  offsetTransitionSpeed: 5
+  timer: 0.1
 --- !u!114 &5583731451542214559
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -251,9 +252,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86c6556701af9e04380698b89f691b6e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: FMODUnity::FMODUnity.StudioListener
-  nonRigidbodyVelocity: 0
   attenuationObject: {fileID: 0}
---- !u!114 &3932435702752715556
+--- !u!114 &2457551107595722528
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -262,28 +262,39 @@ MonoBehaviour:
   m_GameObject: {fileID: 408354109354283963}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Script: {fileID: 11500000, guid: 97fa0f46c6cd3784891aa73180a181fe, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: FMODUnity::FMODUnity.StudioEventEmitter
-  CollisionTag: 
-  EventReference:
+  m_EditorClassIdentifier: Assembly-CSharp::ImpactSoundManagerFMOD
+  groundCheck: {fileID: 6241953448023499574}
+  wallDetection: {fileID: 4131525704634234421}
+  collisionEvent:
     Guid:
-      Data1: 0
-      Data2: 0
-      Data3: 0
-      Data4: 0
-    Path: 
-  Event: 
-  EventPlayTrigger: 0
-  EventStopTrigger: 0
-  AllowFadeout: 1
-  TriggerOnce: 0
-  Preload: 0
-  NonRigidbodyVelocity: 0
-  Params: []
-  OverrideAttenuation: 0
-  OverrideMinDistance: -1
-  OverrideMaxDistance: -1
+      Data1: 1995691804
+      Data2: 1253456753
+      Data3: -652076380
+      Data4: 1095053124
+    Path: event:/Collision
+--- !u!114 &6502695356678060721
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 408354109354283963}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 97fa0f46c6cd3784891aa73180a181fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ImpactSoundManagerFMOD
+  groundCheck: {fileID: 6241953448023499574}
+  wallDetection: {fileID: 4131525704634234421}
+  collisionEvent:
+    Guid:
+      Data1: 1995691804
+      Data2: 1253456753
+      Data3: -652076380
+      Data4: 1095053124
+    Path: event:/Collision
 --- !u!1 &6234128663362313003
 GameObject:
   m_ObjectHideFlags: 0
@@ -710,10 +721,11 @@ MonoBehaviour:
   groundCheck: {fileID: 6241953448023499574}
   wallCheck: {fileID: 4131525704634234421}
   wallSlideMaxSpeed: 2
-  slowTimeScale: 0.1
-  playerSpeedPercentage: 0.1
+  slowTimeScale: 0.25
+  playerSpeedPercentage: 0.2
   slowJumpBoost: 1
   slowGravityBoost: 1
+  movingPlatformTag: MovingPlatform
   isGhostActive: 0
 --- !u!114 &6241953448023499574
 MonoBehaviour:
@@ -754,7 +766,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8941407511240436085}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5af4fa064d5be3f4f8de86f1576a0bda, type: 3}
   m_Name: 

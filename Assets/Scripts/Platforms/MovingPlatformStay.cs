@@ -2,43 +2,20 @@ using UnityEngine;
 
 public class MovingPlatformStay : MonoBehaviour
 {
-    [SerializeField] private string playerTag = "Player";
+    // On rend le mouvement public pour que le joueur puisse le lire
+    public Vector3 PlatformMovement { get; private set; }
     
-    private Rigidbody playerRb;
-    private Vector3 previousPlatformPosition;
+    private Vector3 previousPosition;
 
-    // On utilise FixedUpdate car on manipule la physique (Rigidbody)
+    private void Start()
+    {
+        previousPosition = transform.position;
+    }
+
     private void FixedUpdate()
     {
-        
-        // 1. On calcule la distance parcourue par la plateforme depuis la frame précédente
-        Vector3 platformMovement = transform.position - previousPlatformPosition;
-            
-        // 2. On "téléporte" fluidement le joueur de cette même distance
-        playerRb.MovePosition(playerRb.position + platformMovement);
-        
-        // On met à jour l'ancienne position pour la prochaine frame
-        previousPlatformPosition = transform.position;
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag(playerTag))
-        {
-            // On récupère le Rigidbody du joueur au lieu de le parenter
-            playerRb = other.GetComponent<Rigidbody>();
-            
-            // On initialise la position pour éviter un bond géant à la première frame
-            previousPlatformPosition = transform.position; 
-        }
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.CompareTag(playerTag))
-        {
-            // Le joueur quitte la plateforme, on arrête de le suivre
-            playerRb = null;
-        }    
+        // On calcule la distance parcourue à cette frame
+        PlatformMovement = transform.position - previousPosition;
+        previousPosition = transform.position;
     }
 }
