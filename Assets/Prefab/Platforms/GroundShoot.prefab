@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 5124395954938881500}
   m_Layer: 0
   m_Name: Stay
-  m_TagString: Untagged
+  m_TagString: MovingPlatform
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -48,7 +48,7 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -95,7 +95,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 276.299, y: 66.21375, z: -62.61}
-  m_LocalScale: {x: 2.5654752, y: 0.3162, z: 1}
+  m_LocalScale: {x: 1, y: 0.3162, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3831310500062477735}
@@ -121,8 +121,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 1, y: 0.7252868, z: 1}
+  m_Center: {x: 0, y: -0.13735667, z: 0}
 --- !u!54 &2793916878606955520
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -171,6 +171,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 73280509763733340}
     m_Modifications:
+    - target: {fileID: 792135838116970280, guid: d79038d94f69e4849a121ad3968ddd94, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 9f37ee34b86ef4e46bb8e92297fe2be2, type: 2}
     - target: {fileID: 3941397221560249554, guid: d79038d94f69e4849a121ad3968ddd94, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -211,6 +215,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7655008719492592660, guid: d79038d94f69e4849a121ad3968ddd94, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 9f37ee34b86ef4e46bb8e92297fe2be2, type: 2}
+    - target: {fileID: 8615890289818584169, guid: d79038d94f69e4849a121ad3968ddd94, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 9f37ee34b86ef4e46bb8e92297fe2be2, type: 2}
     - target: {fileID: 9219869041043278141, guid: d79038d94f69e4849a121ad3968ddd94, type: 3}
       propertyPath: m_Name
       value: GroundPlatforme
