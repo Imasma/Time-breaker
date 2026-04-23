@@ -121,12 +121,12 @@ public class LaserCannonParent : MonoBehaviour
         {
             if (hit.collider.CompareTag("Player"))
             {
-                ApplyKillLogic();
+                Kill();
             }
         }
     }
 
-    private void ApplyKillLogic()
+    private void Kill()
     {
         // Téléportation et reset de vélocité si pas en God Mode
         if (playerCheat != null && !playerCheat.godMode && respawnPoint != null)

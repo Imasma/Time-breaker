@@ -250,7 +250,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4582356161355414052}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -6.7000003, y: 15.6, z: -25.300001}
   m_LocalScale: {x: 0.6, y: 0.6, z: 0.6}
   m_ConstrainProportionsScale: 0
@@ -271,12 +271,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 550ece265a65fc04998179907d7a756a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BulletSpawn
+  shootBullet: 0
   cooldown: 2
-  bulletGO: {fileID: 4041590493987149802, guid: afbbeed0a242de642b0420f71bafe9cb, type: 3}
+  bulletPrefab: {fileID: 4041590493987149802, guid: afbbeed0a242de642b0420f71bafe9cb, type: 3}
+  platformPrefab: {fileID: 6391100140298209596, guid: cca09bf6a5557c04bb0e3af373754f95, type: 3}
   bulletSpawn: {fileID: 8136634660841425639}
   respawnPoint: {fileID: 0}
   bulletSpeed: 20
-  bulletLife: 2
+  platformSpeed: 5
 --- !u!1 &5475194898972686482
 GameObject:
   m_ObjectHideFlags: 0
