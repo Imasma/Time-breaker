@@ -424,4 +424,4 @@ MonoBehaviour:
   collisionLayers:
     serializedVersion: 2
     m_Bits: 64
-  respawnPoint: {fileID: 5848343390706491771}
+  respawnPoint: {fileID: 0}

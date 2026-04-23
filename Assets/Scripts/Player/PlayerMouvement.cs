@@ -30,15 +30,16 @@ public class PlayerMovement : MonoBehaviour
     [Header("WallSlide")] 
     [SerializeField] private float wallSlideMaxSpeed = 2f; 
     
-    [Header("Slow System (Mode Slow)")]
+    [Header("Slow System (Ephémère)")]
     [Range(0.1f, 1f)] [SerializeField] private float slowTimeScale = 0.25f;
     [Range(0.1f, 1f)] [SerializeField] private float playerSpeedPercentage = 0.2f; 
-    
+    [SerializeField] private float recoverySpeed = 0.5f; // Plus bas pour un ralenti qui dure un peu
+
     [Header("Slow Motion Physics Tweaks")]
-    [SerializeField] private float slowJumpBoost = 1f;
+    [SerializeField] private float slowJumpBoost = 1.1f;
     [SerializeField] private float slowGravityBoost = 1f;
 
-    [Header("Platforms")] // NOUVEAU : Réglages pour les plateformes
+    [Header("Platforms")]
     [SerializeField] private string movingPlatformTag = "MovingPlatform";
     private MovingPlatformStay currentPlatform;
 
@@ -82,75 +83,71 @@ public class PlayerMovement : MonoBehaviour
         HandleMovement();
         ApplyGravity();
 
-        // NOUVEAU : On applique le mouvement de la plateforme à la fin
         if (currentPlatform != null)
         {
             rb.MovePosition(rb.position + currentPlatform.PlatformMovement);
         }
     }
 
-    public void SetSlowMode(bool active) => isSlowModeActive = active;
+    private float GetDynamicSpeedMultiplier()
+    {
+        // On évite la division par zéro si slowTimeScale est 1
+        if (slowTimeScale >= 0.99f) return 1f;
 
-    private void Jump()
-    {
-        float finalJumpSpeed = jumpForce;
-        if (Time.timeScale < 1f)
-        {
-            float speedCompensation = playerSpeedPercentage / Time.timeScale;
-            finalJumpSpeed *= speedCompensation * slowJumpBoost;
-        }
-        rb.linearVelocity = new Vector3(rb.linearVelocity.x, finalJumpSpeed, rb.linearVelocity.z);
+        float targetRatio = playerSpeedPercentage / slowTimeScale;
+        // Le multiplicateur suit la progression actuelle du TimeScale
+        float t = (1f - Time.timeScale) / (1f - slowTimeScale);
+        return Mathf.Lerp(1f, targetRatio, Mathf.Clamp01(t));
     }
-    
-    private void WallJump()
+
+    void ApplyTimeSlow()
     {
-        rb.linearVelocity = Vector3.zero;
-        float finalWallJumpY = wallJumpPower.y;
-        if (Time.timeScale < 1f)
+        bool shouldBeSlow = isSlowModeActive && !isGhostActive && !isMoving;
+
+        if (shouldBeSlow)
         {
-            float speedCompensation = playerSpeedPercentage / Time.timeScale;
-            finalWallJumpY *= speedCompensation * slowJumpBoost;
+            // Si on vient juste de s'arrêter, on snap à 0.25
+            if (!wasActuallySlow)
+            {
+                Time.timeScale = slowTimeScale;
+                wasActuallySlow = true;
+            }
+
+            // Tant qu'on ne bouge pas, le temps remonte LENTEMENT vers la normale
+            Time.timeScale = Mathf.MoveTowards(Time.timeScale, 1f, Time.unscaledDeltaTime * recoverySpeed);
         }
-        rb.AddForce(new Vector3(0, finalWallJumpY, 0), ForceMode.Impulse);
+        else
+        {
+            // SI ON BOUGE : On reset le TimeScale à 1 INSTANTANÉMENT
+            Time.timeScale = 1f;
+            wasActuallySlow = false;
+        }
+
+        // Mise à jour de la physique
+        Time.fixedDeltaTime = 0.02f * Time.timeScale;
     }
-    
+
     void HandleMovement()
     {
         Vector3 inputDirection = (transform.right * inputX + transform.forward * inputZ).normalized;
-        
         Vector3 currentVelocity = rb.linearVelocity;
         Vector3 currentHorizontal = new Vector3(currentVelocity.x, 0, currentVelocity.z);
         
-        float currentTopSpeed = topSpeed;
-        if (Time.timeScale < 1f) 
-            currentTopSpeed *= (playerSpeedPercentage / slowTimeScale);
-
-        Vector3 targetHorizontal = inputDirection * currentTopSpeed;
-
+        float speedMult = GetDynamicSpeedMultiplier();
+        float currentTopSpeed = topSpeed * speedMult;
         float currentAccelRate;
 
-        if (!isMoving) 
-        {
-            currentAccelRate = deceleration; 
-        } 
-        else if (Vector3.Dot(currentHorizontal.normalized, inputDirection) < -0.1f) 
-        {
-            currentAccelRate = turnFriction; 
-        } 
-        else 
-        {
-            currentAccelRate = acceleration; 
-        }
+        if (!isMoving) currentAccelRate = deceleration * speedMult;
+        else if (Vector3.Dot(currentHorizontal.normalized, inputDirection) < -0.1f) currentAccelRate = turnFriction * speedMult;
+        else currentAccelRate = acceleration * speedMult;
 
-        if (Time.timeScale < 1f) 
-            currentAccelRate *= (playerSpeedPercentage / slowTimeScale);
-
+        Vector3 targetHorizontal = inputDirection * currentTopSpeed;
         Vector3 newHorizontal = Vector3.MoveTowards(currentHorizontal, targetHorizontal, currentAccelRate * Time.fixedDeltaTime);
 
         if (IsSliding())
         {
             Vector3 slopeDirection = Vector3.ProjectOnPlane(Vector3.down, hitNormal).normalized;
-            rb.linearVelocity = new Vector3(slopeDirection.x * slideSpeed, rb.linearVelocity.y, slopeDirection.z * slideSpeed);
+            rb.linearVelocity = new Vector3(slopeDirection.x * slideSpeed * speedMult, rb.linearVelocity.y, slopeDirection.z * slideSpeed * speedMult);
         }
         else
         {
@@ -160,18 +157,15 @@ public class PlayerMovement : MonoBehaviour
     
     void ApplyGravity()
     {
+        float speedMult = GetDynamicSpeedMultiplier();
         Vector3 customGravity = Physics.gravity * gravityMultiplier;
-        if (Time.timeScale < 1f)
-        {
-            float speedCompensation = playerSpeedPercentage / Time.timeScale;
-            customGravity *= (speedCompensation * speedCompensation) * slowGravityBoost;
-        }
+        customGravity *= (speedMult * speedMult) * slowGravityBoost;
 
         if (!groundCheck.isGrounded)
         {
             if (wallCheck.wallDetected && rb.linearVelocity.y < 0)
             {
-                float targetSlideVelocity = -wallSlideMaxSpeed;
+                float targetSlideVelocity = -wallSlideMaxSpeed * speedMult;
                 float slideVelocityChange = targetSlideVelocity - rb.linearVelocity.y;
                 rb.AddForce(Vector3.up * slideVelocityChange, ForceMode.VelocityChange);
             }
@@ -182,32 +176,24 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    void ApplyTimeSlow()
+    private void Jump()
     {
-        bool shouldBeSlow = isSlowModeActive && !isGhostActive && !isMoving;
-        if (shouldBeSlow != wasActuallySlow)
-        {
-            float ratio = playerSpeedPercentage / slowTimeScale;
-
-            if (shouldBeSlow)
-            {
-                Time.timeScale = slowTimeScale;
-                rb.linearVelocity *= ratio;
-            }
-            else
-            {
-                Time.timeScale = 1f;
-                rb.linearVelocity /= ratio;
-            }
-
-            Time.fixedDeltaTime = 0.02f * Time.timeScale;
-            wasActuallySlow = shouldBeSlow;
-        }
-
-        Time.timeScale = wasActuallySlow ? slowTimeScale : 1f;
-        Time.fixedDeltaTime = 0.02f * Time.timeScale;
+        float speedMult = GetDynamicSpeedMultiplier();
+        float finalJumpSpeed = jumpForce * speedMult * slowJumpBoost;
+        rb.linearVelocity = new Vector3(rb.linearVelocity.x, finalJumpSpeed, rb.linearVelocity.z);
     }
     
+    private void WallJump()
+    {
+        rb.linearVelocity = Vector3.zero;
+        float speedMult = GetDynamicSpeedMultiplier();
+        float finalWallJumpY = wallJumpPower.y * speedMult * slowJumpBoost;
+        rb.AddForce(new Vector3(0, finalWallJumpY, 0), ForceMode.Impulse);
+    }
+
+    public void SetSlowMode(bool active) => isSlowModeActive = active;
+    public bool IsSlowModeActive() => wasActuallySlow;
+
     private void CheckSlope()
     {
         if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, 1.5f))
@@ -217,24 +203,16 @@ public class PlayerMovement : MonoBehaviour
     }
 
     private bool IsSliding() => groundCheck.isGrounded && Vector3.Angle(Vector3.up, hitNormal) > slopeLimit;
-    
-    public bool IsSlowModeActive() => wasActuallySlow;
 
-    // NOUVEAU : Détection de l'entrée sur la plateforme
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag(movingPlatformTag))
-        {
             currentPlatform = other.GetComponent<MovingPlatformStay>();
-        }
     }
 
-    // NOUVEAU : Détection de la sortie de la plateforme
     private void OnTriggerExit(Collider other)
     {
         if (other.CompareTag(movingPlatformTag))
-        {
             currentPlatform = null;
-        }
     }
 }

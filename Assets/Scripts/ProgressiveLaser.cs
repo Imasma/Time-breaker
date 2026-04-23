@@ -55,7 +55,7 @@ public class LaserCannonParent : MonoBehaviour
         if (respawnPoint == null)
         {
             GameObject foundRespawn = GameObject.FindWithTag("Respawn Point");
-            if (foundRespawn != null) respawnPoint = foundRespawn.transform;
+            respawnPoint = foundRespawn.transform;
         }
 
         if (muzzlePoint == null) muzzlePoint = transform;
