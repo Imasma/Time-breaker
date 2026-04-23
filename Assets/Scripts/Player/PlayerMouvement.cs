@@ -13,6 +13,8 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float turnFriction = 40f;  
     [SerializeField] private float gravityMultiplier = 2f;
     [SerializeField] private float jumpForce = 7f;
+    [SerializeField] private float secondJumpForce = 4f;
+    [SerializeField] private float fastFallMultiplier = 3f;
     private bool isMoving; 
 
     [Header("Slope Slide")]
@@ -20,8 +22,9 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float slideSpeed = 10f;
     private Vector3 hitNormal;
     
-    [Header("WallJump")]
+    [Header("WallJump & DoubleJump")]
     [SerializeField] private Vector3 wallJumpPower = new Vector3(6f, 12f, 0f);
+    private bool canDoubleJump;
 
     [Header("Detection")]
     [SerializeField] private GroundCheck groundCheck; 
@@ -33,7 +36,7 @@ public class PlayerMovement : MonoBehaviour
     [Header("Slow System (Ephémère avec Durée)")]
     [Range(0.1f, 1f)] [SerializeField] private float slowTimeScale = 0.25f;
     [Range(0.1f, 1f)] [SerializeField] private float playerSpeedPercentage = 0.2f; 
-    [SerializeField] private float recoveryDuration = 2.0f; // Temps en secondes pour revenir à 1.0
+    [SerializeField] private float recoveryDuration = 2.0f; 
 
     [Header("Slow Motion Physics Tweaks")]
     [SerializeField] private float slowJumpBoost = 1.1f;
@@ -70,12 +73,22 @@ public class PlayerMovement : MonoBehaviour
 
         if (jumpAction.triggered)
         {
-            if (groundCheck.isGrounded) Jump();
-            else if (wallCheck.wallDetected && !groundCheck.isGrounded) WallJump();
+            if (groundCheck.isGrounded) 
+            {
+                Jump(jumpForce);
+            }
+            else if (wallCheck.wallDetected) 
+            {
+                WallJump();
+            }
+            else if (canDoubleJump) 
+            {
+                Jump(secondJumpForce);
+                canDoubleJump = false;
+            }
         }
         
         ApplyTimeSlow();
-        Debug.Log(Time.timeScale);
     }
 
     void FixedUpdate()
@@ -83,6 +96,11 @@ public class PlayerMovement : MonoBehaviour
         CheckSlope();
         HandleMovement();
         ApplyGravity();
+
+        if (groundCheck.isGrounded || wallCheck.wallDetected)
+        {
+            canDoubleJump = true;
+        }
 
         if (currentPlatform != null)
         {
@@ -110,10 +128,7 @@ public class PlayerMovement : MonoBehaviour
                 wasActuallySlow = true;
             }
 
-            // CALCUL DE LA VITESSE DE RÉCUPÉRATION
-            // Vitesse = Distance (1.0 - slowScale) / Temps voulu
             float step = (1f - slowTimeScale) / recoveryDuration;
-            
             Time.timeScale = Mathf.MoveTowards(Time.timeScale, 1f, Time.unscaledDeltaTime * step);
         }
         else
@@ -124,8 +139,6 @@ public class PlayerMovement : MonoBehaviour
 
         Time.fixedDeltaTime = 0.02f * Time.timeScale;
     }
-
-    // --- LE RESTE DU SCRIPT RESTE IDENTIQUE ---
 
     void HandleMovement()
     {
@@ -158,7 +171,16 @@ public class PlayerMovement : MonoBehaviour
     void ApplyGravity()
     {
         float speedMult = GetDynamicSpeedMultiplier();
-        Vector3 customGravity = Physics.gravity * gravityMultiplier;
+        
+        float currentGravityMultiplier = gravityMultiplier;
+
+
+        if (!groundCheck.isGrounded && inputZ < -0.1f)
+        {
+            currentGravityMultiplier *= fastFallMultiplier;
+        }
+
+        Vector3 customGravity = Physics.gravity * currentGravityMultiplier;
         customGravity *= (speedMult * speedMult) * slowGravityBoost;
 
         if (!groundCheck.isGrounded)
@@ -176,10 +198,11 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    private void Jump()
+    private void Jump(float force)
     {
         float speedMult = GetDynamicSpeedMultiplier();
-        float finalJumpSpeed = jumpForce * speedMult * slowJumpBoost;
+        float finalJumpSpeed = force * speedMult * slowJumpBoost;
+        
         rb.linearVelocity = new Vector3(rb.linearVelocity.x, finalJumpSpeed, rb.linearVelocity.z);
     }
     
@@ -189,6 +212,8 @@ public class PlayerMovement : MonoBehaviour
         float speedMult = GetDynamicSpeedMultiplier();
         float finalWallJumpY = wallJumpPower.y * speedMult * slowJumpBoost;
         rb.AddForce(new Vector3(0, finalWallJumpY, 0), ForceMode.Impulse);
+        
+        canDoubleJump = true;
     }
 
     public void SetSlowMode(bool active) => isSlowModeActive = active;
@@ -215,4 +240,4 @@ public class PlayerMovement : MonoBehaviour
         if (other.CompareTag(movingPlatformTag))
             currentPlatform = null;
     }
-}
+}   

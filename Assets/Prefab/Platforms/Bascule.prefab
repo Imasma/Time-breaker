@@ -56,6 +56,10 @@ PrefabInstance:
       propertyPath: m_TagString
       value: Ground
       objectReference: {fileID: 0}
+    - target: {fileID: -5477749408508380018, guid: f7af5f509fd19ad49a0a07166c3126c9, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.5
+      objectReference: {fileID: 0}
     - target: {fileID: -4683669308469848369, guid: f7af5f509fd19ad49a0a07166c3126c9, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -71,6 +75,14 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: f7af5f509fd19ad49a0a07166c3126c9, type: 3}
       propertyPath: m_Name
       value: Bascule
+      objectReference: {fileID: 0}
+    - target: {fileID: 4083501151425157549, guid: f7af5f509fd19ad49a0a07166c3126c9, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4083501151425157549, guid: f7af5f509fd19ad49a0a07166c3126c9, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
