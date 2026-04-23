@@ -9,6 +9,7 @@ TagManager:
   - Respawn Point
   - Clone
   - MovingPlatform
+  - Bullet
   layers:
   - Default
   - TransparentFX
