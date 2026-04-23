@@ -30,10 +30,10 @@ public class PlayerMovement : MonoBehaviour
     [Header("WallSlide")] 
     [SerializeField] private float wallSlideMaxSpeed = 2f; 
     
-    [Header("Slow System (Ephémère)")]
+    [Header("Slow System (Ephémère avec Durée)")]
     [Range(0.1f, 1f)] [SerializeField] private float slowTimeScale = 0.25f;
     [Range(0.1f, 1f)] [SerializeField] private float playerSpeedPercentage = 0.2f; 
-    [SerializeField] private float recoverySpeed = 0.5f; // Plus bas pour un ralenti qui dure un peu
+    [SerializeField] private float recoveryDuration = 2.0f; // Temps en secondes pour revenir à 1.0
 
     [Header("Slow Motion Physics Tweaks")]
     [SerializeField] private float slowJumpBoost = 1.1f;
@@ -75,6 +75,7 @@ public class PlayerMovement : MonoBehaviour
         }
         
         ApplyTimeSlow();
+        Debug.Log(Time.timeScale);
     }
 
     void FixedUpdate()
@@ -91,11 +92,8 @@ public class PlayerMovement : MonoBehaviour
 
     private float GetDynamicSpeedMultiplier()
     {
-        // On évite la division par zéro si slowTimeScale est 1
         if (slowTimeScale >= 0.99f) return 1f;
-
         float targetRatio = playerSpeedPercentage / slowTimeScale;
-        // Le multiplicateur suit la progression actuelle du TimeScale
         float t = (1f - Time.timeScale) / (1f - slowTimeScale);
         return Mathf.Lerp(1f, targetRatio, Mathf.Clamp01(t));
     }
@@ -106,26 +104,28 @@ public class PlayerMovement : MonoBehaviour
 
         if (shouldBeSlow)
         {
-            // Si on vient juste de s'arrêter, on snap à 0.25
             if (!wasActuallySlow)
             {
                 Time.timeScale = slowTimeScale;
                 wasActuallySlow = true;
             }
 
-            // Tant qu'on ne bouge pas, le temps remonte LENTEMENT vers la normale
-            Time.timeScale = Mathf.MoveTowards(Time.timeScale, 1f, Time.unscaledDeltaTime * recoverySpeed);
+            // CALCUL DE LA VITESSE DE RÉCUPÉRATION
+            // Vitesse = Distance (1.0 - slowScale) / Temps voulu
+            float step = (1f - slowTimeScale) / recoveryDuration;
+            
+            Time.timeScale = Mathf.MoveTowards(Time.timeScale, 1f, Time.unscaledDeltaTime * step);
         }
         else
         {
-            // SI ON BOUGE : On reset le TimeScale à 1 INSTANTANÉMENT
             Time.timeScale = 1f;
             wasActuallySlow = false;
         }
 
-        // Mise à jour de la physique
         Time.fixedDeltaTime = 0.02f * Time.timeScale;
     }
+
+    // --- LE RESTE DU SCRIPT RESTE IDENTIQUE ---
 
     void HandleMovement()
     {
