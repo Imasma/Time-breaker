@@ -271,7 +271,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 550ece265a65fc04998179907d7a756a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BulletSpawn
-  shootBullet: 0
+  shootEvent:
+    Guid:
+      Data1: 1486518290
+      Data2: 1160909411
+      Data3: 175104168
+      Data4: 1090508095
+    Path: event:/Canon_CrystalShoot
+  shootBullet: 1
   cooldown: 2
   bulletPrefab: {fileID: 4041590493987149802, guid: afbbeed0a242de642b0420f71bafe9cb, type: 3}
   platformPrefab: {fileID: 6391100140298209596, guid: cca09bf6a5557c04bb0e3af373754f95, type: 3}

@@ -2,8 +2,11 @@ using UnityEngine;
 
 public class BulletSpawn : MonoBehaviour
 {   
+    [Header("FMOD Sound")]
+    [SerializeField] private FMODUnity.EventReference shootEvent; // Glisse ton event FMOD ici
+
     [Header("Paramètres de Tir")]
-    [SerializeField] private bool shootBullet = true; // Le Toggle
+    [SerializeField] private bool shootBullet = true; 
     [SerializeField] private float cooldown = 2f;
     private float t;
 
@@ -28,6 +31,9 @@ public class BulletSpawn : MonoBehaviour
 
     void Update()
     {
+        // On met à jour le paramètre global de temps FMOD ici pour être sûr
+        FMODUnity.RuntimeManager.StudioSystem.setParameterByName("GameTimeScale", Time.timeScale);
+
         t -= Time.deltaTime;
         if (t <= 0f)
         { 
@@ -45,21 +51,24 @@ public class BulletSpawn : MonoBehaviour
         {
             objectToSpawn = bulletPrefab;
             spawnRotation = bulletSpawn.rotation;
+
+            // --- JOUER LE SON SPATIALISÉ ---
+            // On joue le son attaché au "bulletSpawn" pour qu'il vienne du canon
+            if (!shootEvent.IsNull)
+            {
+                FMODUnity.RuntimeManager.PlayOneShot(shootEvent, bulletSpawn.transform.position);            }
         }
         else
         {
             objectToSpawn = platformPrefab;
-            // On garde la plateforme plate (X et Z à 0)
             spawnRotation = Quaternion.Euler(0, bulletSpawn.eulerAngles.y, 0);
         }
 
         GameObject newObj = Instantiate(objectToSpawn, bulletSpawn.position, spawnRotation);
     
-        // CONFIGURATION DE LA PLATEFORME
         if (newObj.TryGetComponent<ShootPlatforme>(out ShootPlatforme platformScript))
         {
             platformScript.speed = this.platformSpeed;
-            // ON ENVOIE LA DIRECTION RÉELLE DU CANON ICI :
             platformScript.moveDirection = bulletSpawn.forward; 
         }
     
@@ -68,13 +77,10 @@ public class BulletSpawn : MonoBehaviour
             bulletScript.respawnPoint = this.respawnPoint;
         }
 
-        // On peut désactiver la vélocité Rigidbody pour les plateformes 
-        // car le script ShootPlatforme gère maintenant tout le mouvement.
         Rigidbody rb = newObj.GetComponent<Rigidbody>();
         if (rb != null && shootBullet)
         {
             rb.linearVelocity = bulletSpawn.forward * bulletSpeed;
         }
-    
     }
 }

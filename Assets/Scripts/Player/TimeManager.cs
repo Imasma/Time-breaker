@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class TimeManager : MonoBehaviour
@@ -13,5 +14,11 @@ public class TimeManager : MonoBehaviour
         // Mise en place du Singleton
         if (Instance == null) { Instance = this; }
         else { Destroy(gameObject); }
+    }
+
+    private void Update()
+    {
+        // synchronise le paramètre global FMOD avec le temps de Unity
+        FMODUnity.RuntimeManager.StudioSystem.setParameterByName("GameTimeScale", Time.timeScale);
     }
 }

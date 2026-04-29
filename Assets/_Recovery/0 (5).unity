@@ -3072,6 +3072,30 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3541280348318968466, guid: 0ed01fcd7604c844593e314acc1a39f6, type: 3}
+      propertyPath: shootBullet
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3541280348318968466, guid: 0ed01fcd7604c844593e314acc1a39f6, type: 3}
+      propertyPath: shootEvent.Path
+      value: event:/Canon_CrystalShoot
+      objectReference: {fileID: 0}
+    - target: {fileID: 3541280348318968466, guid: 0ed01fcd7604c844593e314acc1a39f6, type: 3}
+      propertyPath: shootEvent.Guid.Data1
+      value: 1486518290
+      objectReference: {fileID: 0}
+    - target: {fileID: 3541280348318968466, guid: 0ed01fcd7604c844593e314acc1a39f6, type: 3}
+      propertyPath: shootEvent.Guid.Data2
+      value: 1160909411
+      objectReference: {fileID: 0}
+    - target: {fileID: 3541280348318968466, guid: 0ed01fcd7604c844593e314acc1a39f6, type: 3}
+      propertyPath: shootEvent.Guid.Data3
+      value: 175104168
+      objectReference: {fileID: 0}
+    - target: {fileID: 3541280348318968466, guid: 0ed01fcd7604c844593e314acc1a39f6, type: 3}
+      propertyPath: shootEvent.Guid.Data4
+      value: 1090508095
+      objectReference: {fileID: 0}
     - target: {fileID: 4582356161355414052, guid: 0ed01fcd7604c844593e314acc1a39f6, type: 3}
       propertyPath: m_Name
       value: CanonComp
