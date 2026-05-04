@@ -2354,8 +2354,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 91029668}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 134.9, y: 17.82, z: 312.07}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2375,7 +2375,7 @@ Transform:
   - {fileID: 1866442552}
   - {fileID: 927866498}
   - {fileID: 1521721048}
-  m_Father: {fileID: 941766349}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &106959893
 GameObject:
@@ -11065,6 +11065,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Checkpoint (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 2783282212372999661, guid: 95cf1a4b3776aab4c966d4dc9490e815, type: 3}
+      propertyPath: respawnPoint
+      value: 
+      objectReference: {fileID: 941766348}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -19514,8 +19518,7 @@ Transform:
   m_LocalPosition: {x: 134.9, y: 17.82, z: 312.07}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 91029669}
+  m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &945303781
@@ -24899,6 +24902,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Checkpoint
       objectReference: {fileID: 0}
+    - target: {fileID: 2783282212372999661, guid: 95cf1a4b3776aab4c966d4dc9490e815, type: 3}
+      propertyPath: respawnPoint
+      value: 
+      objectReference: {fileID: 941766348}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -44124,6 +44131,7 @@ SceneRoots:
   - {fileID: 9480106}
   - {fileID: 799337812}
   - {fileID: 1123591150}
+  - {fileID: 91029669}
   - {fileID: 763324993}
   - {fileID: 1496051329}
   - {fileID: 1271261273}
