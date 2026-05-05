@@ -56,7 +56,9 @@ public class BulletSpawn : MonoBehaviour
             // On joue le son attaché au "bulletSpawn" pour qu'il vienne du canon
             if (!shootEvent.IsNull)
             {
-                FMODUnity.RuntimeManager.PlayOneShot(shootEvent, bulletSpawn.transform.position);            }
+                //FMODUnity.RuntimeManager.PlayOneShot(shootEvent, bulletSpawn.transform.position);
+                
+            }
         }
         else
         {

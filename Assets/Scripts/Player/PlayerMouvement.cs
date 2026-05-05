@@ -36,7 +36,6 @@ public class PlayerMovement : MonoBehaviour
     [Header("Slow System (Ephémère avec Durée)")]
     [Range(0.1f, 1f)] [SerializeField] private float slowTimeScale = 0.25f;
     [Range(0.1f, 1f)] [SerializeField] private float playerSpeedPercentage = 0.2f; 
-    [SerializeField] private float recoveryDuration = 2.0f; 
 
     [Header("Slow Motion Physics Tweaks")]
     [SerializeField] private float slowJumpBoost = 1.1f;
@@ -118,25 +117,23 @@ public class PlayerMovement : MonoBehaviour
 
     void ApplyTimeSlow()
     {
+        // On vérifie si on doit être au ralenti
         bool shouldBeSlow = isSlowModeActive && !isGhostActive && !isMoving;
 
         if (shouldBeSlow)
         {
-            if (!wasActuallySlow)
-            {
-                Time.timeScale = slowTimeScale;
-                wasActuallySlow = true;
-            }
-
-            float step = (1f - slowTimeScale) / recoveryDuration;
-            Time.timeScale = Mathf.MoveTowards(Time.timeScale, 1f, Time.unscaledDeltaTime * step);
+            // Le temps reste bloqué sur ta valeur slowTimeScale (ex: 0.25)
+            Time.timeScale = slowTimeScale;
+            wasActuallySlow = true;
         }
         else
         {
+            // Dès qu'on bouge ou que le mode est off, le temps redevient normal (1.0)
             Time.timeScale = 1f;
             wasActuallySlow = false;
         }
 
+        // Toujours mettre à jour le fixedDeltaTime pour garder une physique fluide
         Time.fixedDeltaTime = 0.02f * Time.timeScale;
     }
 
