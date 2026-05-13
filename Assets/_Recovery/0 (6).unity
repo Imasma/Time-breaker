@@ -22607,7 +22607,7 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 8941407511240436085, guid: b7b1301ba98e4894c9b6d39242fa22fc, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 2119956879}
+      addedObject: {fileID: 2005862972}
   m_SourcePrefab: {fileID: 100100000, guid: b7b1301ba98e4894c9b6d39242fa22fc, type: 3}
 --- !u!1 &939279517
 GameObject:
@@ -50854,6 +50854,28 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2005862962 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8941407511240436085, guid: b7b1301ba98e4894c9b6d39242fa22fc, type: 3}
+  m_PrefabInstance: {fileID: 938767904}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2005862972
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2005862962}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9d43fa109f926044b6b43c18ebde35e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ImagesRemanentes
+  ghostPrefab: {fileID: 833479935448682478, guid: 75bae867529bddf4aa0e4c4c5e88b2b5, type: 3}
+  spawnFrequency: 0.1
+  ghostLifetime: 0.5
+  playerMovement: {fileID: 0}
+  isEnabled: 1
 --- !u!1 &2010260166
 GameObject:
   m_ObjectHideFlags: 0
@@ -53612,40 +53634,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2118082856}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!1 &2119956877 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8941407511240436085, guid: b7b1301ba98e4894c9b6d39242fa22fc, type: 3}
-  m_PrefabInstance: {fileID: 938767904}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &2119956879
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2119956877}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b9d43fa109f926044b6b43c18ebde35e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ImagesRemanentes
-  ghostPrefab: {fileID: 833479935448682478, guid: 75bae867529bddf4aa0e4c4c5e88b2b5, type: 3}
-  spawnFrequency: 0.5
-  ghostLifetime: 2
-  playerMovement: {fileID: 2119956884}
-  slowBufferDuration: 0.2
-  isEnabled: 1
---- !u!114 &2119956884 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4966713133860908830, guid: b7b1301ba98e4894c9b6d39242fa22fc, type: 3}
-  m_PrefabInstance: {fileID: 938767904}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2119956877}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: da6276ae0259c8744b6f0f8702d32839, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &2120327570 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4786814524132556326, guid: 0ed01fcd7604c844593e314acc1a39f6, type: 3}

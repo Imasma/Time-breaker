@@ -450,6 +450,7 @@ GameObject:
   - component: {fileID: 4131525704634234421}
   - component: {fileID: 9156033535460788796}
   - component: {fileID: 7774054601582360614}
+  - component: {fileID: 8857194273134590270}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -823,3 +824,21 @@ MonoBehaviour:
       m_Action: God Mode
       m_Flags: 0
     m_Flags: 0
+--- !u!114 &8857194273134590270
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8941407511240436085}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9d43fa109f926044b6b43c18ebde35e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ImagesRemanentes
+  ghostPrefab: {fileID: 833479935448682478, guid: 75bae867529bddf4aa0e4c4c5e88b2b5, type: 3}
+  spawnFrequency: 0.5
+  ghostLifetime: 2
+  playerMovement: {fileID: 4966713133860908830}
+  slowBufferDuration: 0.2
+  isEnabled: 0
