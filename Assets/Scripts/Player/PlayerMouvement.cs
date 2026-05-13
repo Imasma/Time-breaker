@@ -234,10 +234,17 @@ public class PlayerMovement : MonoBehaviour
 
     private void Jump(float force)
     {
-        // On retire speedMult ici ! 
-        // On garde slowJumpBoost pour que tu puisses ajuster finement dans l'inspecteur
-        float finalJumpSpeed = force * slowJumpBoost;
-    
+        float finalJumpSpeed = force;
+
+        if (wasActuallySlow)
+        {
+            finalJumpSpeed = force * slowJumpBoost;
+        }
+        else 
+        {
+            finalJumpSpeed = force;
+        }
+
         rb.linearVelocity = new Vector3(rb.linearVelocity.x, finalJumpSpeed, rb.linearVelocity.z);
     }
     

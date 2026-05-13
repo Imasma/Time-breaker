@@ -704,7 +704,7 @@ MonoBehaviour:
   wallSlideMaxSpeed: 2
   slowTimeScale: 0.25
   playerSpeedPercentage: 0.2
-  slowJumpBoost: 1
+  slowJumpBoost: 1.25
   slowGravityBoost: 1
   movingPlatformTag: MovingPlatform
   isGhostActive: 0
