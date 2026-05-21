@@ -663,6 +663,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da6276ae0259c8744b6f0f8702d32839, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  coyoteTimeDuration: 0.5
   jumpAction:
     m_Name: Jump
     m_Type: 0
@@ -704,7 +705,7 @@ MonoBehaviour:
   wallSlideMaxSpeed: 2
   slowTimeScale: 0.25
   playerSpeedPercentage: 0.2
-  slowJumpBoost: 1.25
+  slowJumpBoost: 1.2
   slowGravityBoost: 1
   movingPlatformTag: MovingPlatform
   isGhostActive: 0
@@ -837,8 +838,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ImagesRemanentes
   ghostPrefab: {fileID: 833479935448682478, guid: 75bae867529bddf4aa0e4c4c5e88b2b5, type: 3}
-  spawnFrequency: 0.5
+  spawnFrequency: 0.75
   ghostLifetime: 2
   playerMovement: {fileID: 4966713133860908830}
   slowBufferDuration: 0.2
-  isEnabled: 0
+  isEnabled: 1

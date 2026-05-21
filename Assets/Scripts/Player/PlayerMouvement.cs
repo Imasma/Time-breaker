@@ -3,6 +3,10 @@ using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
+    [Header("Coyote Time")]
+    [SerializeField] private float coyoteTimeDuration = 0.15f; 
+    private float coyoteTimeCounter;
+
     [Header("Input System")]
     public InputAction jumpAction; 
 
@@ -33,7 +37,7 @@ public class PlayerMovement : MonoBehaviour
     [Header("WallSlide")] 
     [SerializeField] private float wallSlideMaxSpeed = 2f; 
     
-    [Header("Slow System (Ephémère avec Durée)")]
+    [Header("Slow System")]
     [Range(0.1f, 1f)] [SerializeField] private float slowTimeScale = 0.25f;
     [Range(0.1f, 1f)] [SerializeField] private float playerSpeedPercentage = 0.2f; 
 
@@ -70,11 +74,23 @@ public class PlayerMovement : MonoBehaviour
 
         isMoving = (Mathf.Abs(inputX) > 0.1f || Mathf.Abs(inputZ) > 0.1f);
 
+        // COYOTE TIME : Gestion du compteur
+        if (groundCheck.isGrounded)
+        {
+            coyoteTimeCounter = coyoteTimeDuration;
+        }
+        else
+        {
+            coyoteTimeCounter -= Time.deltaTime; // S'adapte automatiquement au Slow Motion grâce à Time.deltaTime
+        }
+
         if (jumpAction.triggered)
         {
-            if (groundCheck.isGrounded) 
+            // COYOTE TIME : On vérifie le compteur au lieu de groundCheck.isGrounded
+            if (coyoteTimeCounter > 0f) 
             {
                 Jump(jumpForce);
+                coyoteTimeCounter = 0f; // Évite de pouvoir spammer le saut dans la même fenêtre
             }
             else if (wallCheck.wallDetected) 
             {
@@ -117,23 +133,19 @@ public class PlayerMovement : MonoBehaviour
 
     void ApplyTimeSlow()
     {
-        // On vérifie si on doit être au ralenti
         bool shouldBeSlow = isSlowModeActive && !isGhostActive && !isMoving;
 
         if (shouldBeSlow)
         {
-            // Le temps reste bloqué sur ta valeur slowTimeScale (ex: 0.25)
             Time.timeScale = slowTimeScale;
             wasActuallySlow = true;
         }
         else
         {
-            // Dès qu'on bouge ou que le mode est off, le temps redevient normal (1.0)
             Time.timeScale = 1f;
             wasActuallySlow = false;
         }
 
-        // Toujours mettre à jour le fixedDeltaTime pour garder une physique fluide
         Time.fixedDeltaTime = Mathf.Max(0.005f, 0.02f * Time.timeScale);
     }
 
@@ -149,8 +161,6 @@ public class PlayerMovement : MonoBehaviour
 
         if (!isMoving) 
         {
-            // FIX : Si on est en l'air, on n'applique PAS de décélération horizontale
-            // On garde l'élan (Momentum)
             currentAccelRate = groundCheck.isGrounded ? (deceleration * speedMult) : 0f; 
         }
         else if (Vector3.Dot(currentHorizontal.normalized, inputDirection) < -0.1f) 
@@ -165,7 +175,6 @@ public class PlayerMovement : MonoBehaviour
         Vector3 targetHorizontal = inputDirection * targetMaxSpeed;
         Vector3 newHorizontal;
 
-        // Si on lâche l'input en l'air, on garde la vélocité actuelle intacte
         if (!isMoving && !groundCheck.isGrounded)
         {
             newHorizontal = currentHorizontal;
@@ -180,11 +189,9 @@ public class PlayerMovement : MonoBehaviour
             newHorizontal = Vector3.MoveTowards(currentHorizontal, targetHorizontal, currentAccelRate * Time.fixedDeltaTime);
         }
 
-        // Application finale (reste inchangé)
         if (IsSliding())
         {
             Vector3 slopeDirection = Vector3.ProjectOnPlane(Vector3.down, hitNormal).normalized;
-            // FIX : On modifie X et Z, mais on garde rb.linearVelocity.y en temps RÉEL
             rb.linearVelocity = new Vector3(
                 slopeDirection.x * slideSpeed * speedMult, 
                 rb.linearVelocity.y, 
@@ -193,9 +200,6 @@ public class PlayerMovement : MonoBehaviour
         }
         else
         {
-            // FIX CRITIQUE : Ne pas utiliser 'currentVelocity.y' stocké au début.
-            // On injecte directement la vélocité horizontale calculée tout en laissant
-            // l'axe Y vivre sa vie (saut/gravité).
             rb.linearVelocity = new Vector3(newHorizontal.x, rb.linearVelocity.y, newHorizontal.z);
         }
     }
@@ -212,8 +216,6 @@ public class PlayerMovement : MonoBehaviour
 
         Vector3 customGravity = Physics.gravity * currentGravityMultiplier;
     
-        // FIX : On retire le (speedMult * speedMult). 
-        // On garde juste slowGravityBoost si tu veux ajuster manuellement le feeling.
         customGravity *= slowGravityBoost; 
 
         if (!groundCheck.isGrounded)
@@ -226,7 +228,6 @@ public class PlayerMovement : MonoBehaviour
             }
             else
             {
-                // Acceleration est déjà scalé par le temps via le moteur physique
                 rb.AddForce(customGravity, ForceMode.Acceleration);
             }
         }
@@ -240,10 +241,6 @@ public class PlayerMovement : MonoBehaviour
         {
             finalJumpSpeed = force * slowJumpBoost;
         }
-        else 
-        {
-            finalJumpSpeed = force;
-        }
 
         rb.linearVelocity = new Vector3(rb.linearVelocity.x, finalJumpSpeed, rb.linearVelocity.z);
     }
@@ -252,7 +249,6 @@ public class PlayerMovement : MonoBehaviour
     {
         rb.linearVelocity = Vector3.zero;
     
-        // On retire speedMult ici aussi
         float finalWallJumpY = wallJumpPower.y * slowJumpBoost;
         rb.AddForce(new Vector3(0, finalWallJumpY, 0), ForceMode.Impulse);
     
@@ -283,4 +279,4 @@ public class PlayerMovement : MonoBehaviour
         if (other.CompareTag(movingPlatformTag))
             currentPlatform = null;
     }
-}   
+}
