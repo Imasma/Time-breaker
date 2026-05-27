@@ -3,7 +3,8 @@ using UnityEngine;
 public class BulletSpawn : MonoBehaviour
 {   
     [Header("FMOD Sound")]
-    [SerializeField] private FMODUnity.EventReference shootEvent; // Glisse ton event FMOD ici
+    [SerializeField] private float maxSoundDistance = 12f; 
+    [SerializeField] private FMODUnity.EventReference shootEvent;
 
     [Header("Paramètres de Tir")]
     [SerializeField] private bool shootBullet = true; 
@@ -20,6 +21,8 @@ public class BulletSpawn : MonoBehaviour
     [SerializeField] private float bulletSpeed = 20f;
     [SerializeField] private float platformSpeed = 5f;
     
+    private Transform playerTransform;
+    
     private void Start()
     {
         if (respawnPoint == null)
@@ -27,11 +30,17 @@ public class BulletSpawn : MonoBehaviour
             GameObject foundRespawn = GameObject.FindWithTag("Respawn Point");
             if (foundRespawn != null) respawnPoint = foundRespawn.transform;
         }
+
+        // --- MODIFICATION : On cherche le Player via son Tag ---
+        GameObject player = GameObject.FindWithTag("Player");
+        if (player != null)
+        {
+            playerTransform = player.transform;
+        }
     }
 
     void Update()
     {
-        // On met à jour le paramètre global de temps FMOD ici pour être sûr
         FMODUnity.RuntimeManager.StudioSystem.setParameterByName("GameTimeScale", Time.timeScale);
 
         t -= Time.deltaTime;
@@ -52,12 +61,23 @@ public class BulletSpawn : MonoBehaviour
             objectToSpawn = bulletPrefab;
             spawnRotation = bulletSpawn.rotation;
 
-            // --- JOUER LE SON SPATIALISÉ ---
-            // On joue le son attaché au "bulletSpawn" pour qu'il vienne du canon
             if (!shootEvent.IsNull)
             {
-                //FMODUnity.RuntimeManager.PlayOneShot(shootEvent, bulletSpawn.transform.position);
-                
+                if (playerTransform != null)
+                {
+                    // Calcul de la distance réelle entre le canon et le JOUEUR
+                    float distanceToPlayer = Vector3.Distance(bulletSpawn.position, playerTransform.position);
+
+                    if (distanceToPlayer <= maxSoundDistance)
+                    {
+                        FMODUnity.RuntimeManager.PlayOneShot(shootEvent, bulletSpawn.transform.position);
+                    }
+                }
+                else
+                {
+                    // Sécurité si le tag Player n'est pas trouvé
+                    FMODUnity.RuntimeManager.PlayOneShot(shootEvent, bulletSpawn.transform.position);
+                }
             }
         }
         else

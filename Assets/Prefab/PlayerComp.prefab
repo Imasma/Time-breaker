@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 8670783578057290947}
   - component: {fileID: 3326901327454760203}
   - component: {fileID: 522968822575272612}
-  - component: {fileID: 5583731451542214559}
   - component: {fileID: 2457551107595722528}
   m_Layer: 0
   m_Name: Main Camera
@@ -144,24 +143,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 557773948738305211}
-  normalOffset: {x: 0, y: 2, z: -10}
-  slowModeOffset: {x: 0, y: 2, z: -15}
+  normalOffset: {x: 0, y: 0.5, z: -10}
+  slowModeOffset: {x: 0, y: 0.5, z: -15}
   smoothTime: 0.25
   offsetTransitionSpeed: 5
   timer: 0.1
---- !u!114 &5583731451542214559
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 408354109354283963}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 86c6556701af9e04380698b89f691b6e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: FMODUnity::FMODUnity.StudioListener
-  attenuationObject: {fileID: 0}
 --- !u!114 &2457551107595722528
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -361,6 +347,7 @@ GameObject:
   - component: {fileID: 9156033535460788796}
   - component: {fileID: 7774054601582360614}
   - component: {fileID: 8857194273134590270}
+  - component: {fileID: 6490755822752851515}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -607,7 +594,7 @@ MonoBehaviour:
   jumpForce: 10
   secondJumpForce: 6
   fastFallMultiplier: 3
-  slopeLimit: 45
+  slopeLimit: 90
   slideSpeed: 10
   wallJumpPower: {x: 6, y: 12, z: 0}
   groundCheck: {fileID: 6241953448023499574}
@@ -753,6 +740,26 @@ MonoBehaviour:
   playerMovement: {fileID: 4966713133860908830}
   slowBufferDuration: 0.2
   isEnabled: 1
+--- !u!114 &6490755822752851515
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8941407511240436085}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01836ef4997d2f741b8f8e0d5455f603, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerProximityEmitter
+  detectionRadius: 2.5
+  crystalLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  crystalTag: Crystal
+  transitionSpeed: 5
+  showGizmos: 1
+  gizmoColor: {r: 0.3, g: 0.9, b: 1, a: 0.25}
 --- !u!1001 &8884683485890432204
 PrefabInstance:
   m_ObjectHideFlags: 0
