@@ -105,15 +105,15 @@ Material:
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
     - _DstBlendAlpha: 0
-    - _EmissionMax: 7
+    - _EmissionMax: 6.5
     - _EnvironmentReflections: 1
-    - _FresnelPower: 5
-    - _FresnelStrength: 1.5
+    - _FresnelPower: 10
+    - _FresnelStrength: 5
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
     - _GlowRadius: 8
-    - _GlowSharpness: 2
+    - _GlowSharpness: 1
     - _Metallic: 0
     - _NoiseScale: 1
     - _NoiseScrollX: 0.05
@@ -121,8 +121,8 @@ Material:
     - _NoiseStrength: 0.1
     - _OcclusionStrength: 1
     - _Parallax: 0.005
-    - _PulseIntensity: 0.95
-    - _PulseSpeed: 3
+    - _PulseIntensity: 1
+    - _PulseSpeed: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
     - _Smoothness: 0.5

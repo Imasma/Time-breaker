@@ -151,7 +151,7 @@ public class PlayerMovement : MonoBehaviour
 
     void HandleMovement()
     {
-        Vector3 inputDirection = (transform.right * inputX + transform.forward * inputZ).normalized;
+        Vector3 inputDirection = (Vector3.right * inputX + Vector3.forward * inputZ).normalized;
         Vector3 currentVelocity = rb.linearVelocity;
         Vector3 currentHorizontal = new Vector3(currentVelocity.x, 0, currentVelocity.z);
     

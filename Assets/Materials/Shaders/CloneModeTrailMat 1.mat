@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: CristauxMatShader
-  m_Shader: {fileID: 4800000, guid: 026d01a272e0a50448d7a9b5c67b142e, type: 3}
+  m_Name: CloneModeTrailMat 1
+  m_Shader: {fileID: 4800000, guid: 7db3e7882e06e9244aa931741b77d7d8, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -49,18 +49,10 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: f2ddb1b1bffd1e44e88a21c7bc70749d, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _NoiseTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _NormalMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -91,7 +83,6 @@ Material:
     m_Ints: []
     m_Floats:
     - _AddPrecomputedVelocity: 0
-    - _Alpha: 0.4
     - _AlphaClip: 0
     - _AlphaToMask: 0
     - _Blend: 0
@@ -105,24 +96,14 @@ Material:
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
     - _DstBlendAlpha: 0
-    - _EmissionMax: 10
+    - _EmissionPower: 5
     - _EnvironmentReflections: 1
-    - _FresnelPower: 10
-    - _FresnelStrength: 5
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
-    - _GlowRadius: 8
-    - _GlowSharpness: 0.8
     - _Metallic: 0
-    - _NoiseScale: 1
-    - _NoiseScrollX: 0.05
-    - _NoiseScrollY: 0.03
-    - _NoiseStrength: 0.1
     - _OcclusionStrength: 1
     - _Parallax: 0.005
-    - _PulseIntensity: 1
-    - _PulseSpeed: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
     - _Smoothness: 0.5
@@ -132,18 +113,15 @@ Material:
     - _SrcBlendAlpha: 1
     - _Surface: 0
     - _WorkflowMode: 1
-    - _XRMotionVectorsPass: 1
     - _ZWrite: 1
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _FresnelColor: {r: 0.8, g: 0.95, b: 1, a: 1}
-    - _GlowColor: {r: 0.5896226, g: 0.9487028, b: 1, a: 1}
+    - _Color: {r: 0, g: 0.8513794, b: 1, a: 0.39215687}
+    - _EmissionColor: {r: 0, g: 0.8509804, b: 1, a: 0.78431374}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
---- !u!114 &127691453144950397
+--- !u!114 &8646603606254815715
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}
@@ -154,5 +132,5 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Editor::UnityEditor.Rendering.Universal.AssetVersion
+  m_EditorClassIdentifier: 
   version: 10

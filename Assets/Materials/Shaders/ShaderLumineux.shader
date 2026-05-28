@@ -1,4 +1,4 @@
-Shader "Custom/TrailGlow"
+﻿Shader "Custom/TrailGlow"
 {
     Properties
     {
@@ -54,6 +54,7 @@ Shader "Custom/TrailGlow"
                 col.rgb += _EmissionColor.rgb * _EmissionPower;
                 return col;
             }
+
             ENDCG
         }
     }
