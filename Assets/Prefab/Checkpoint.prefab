@@ -126,6 +126,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a265983fda36fca4e8cf5a9636675431, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CheckPoint
+  setSpawn:
+    Guid:
+      Data1: -820862563
+      Data2: 1170342403
+      Data3: -1280041313
+      Data4: -360132502
+    Path: event:/Checkpoint
   respawnPoint: {fileID: 0}
 --- !u!1001 &4508313001915856385
 PrefabInstance:

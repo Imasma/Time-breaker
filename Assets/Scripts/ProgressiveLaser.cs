@@ -4,6 +4,10 @@ public class LaserCannonParent : MonoBehaviour
 {
     private enum LaserState { Idle, Extending, Retracting }
 
+    [Header("Audio")]
+    [SerializeField] private FMODUnity.EventReference deathSound;
+    private FMOD.Studio.EventInstance deathSoundInstance;
+
     [Header("Visuels du Laser")]
     [SerializeField] private Material laserMaterial;
     [SerializeField] private float laserWidth = 0.1f;
@@ -27,20 +31,16 @@ public class LaserCannonParent : MonoBehaviour
 
     private void Awake()
     {
-        // On cherche ou on crée le LineRenderer
         line = GetComponentInChildren<LineRenderer>();
         if (line == null) line = gameObject.AddComponent<LineRenderer>();
         
-        // --- APPLICATION DES RÉGLAGES VISUELS ---
         line.material = laserMaterial;
         line.startWidth = laserWidth;
         line.endWidth = laserWidth;
-        // ----------------------------------------
 
         line.positionCount = 2;
         line.enabled = false;
 
-        // Récupération des infos du joueur
         GameObject player = GameObject.FindWithTag("Player");
         if (player != null)
         {
@@ -51,7 +51,6 @@ public class LaserCannonParent : MonoBehaviour
 
     private void Start()
     {
-        // Setup du point de respawn
         if (respawnPoint == null)
         {
             GameObject foundRespawn = GameObject.FindWithTag("Respawn Point");
@@ -63,7 +62,6 @@ public class LaserCannonParent : MonoBehaviour
 
     private void Update()
     {
-        // Utilise deltaTime pour suivre le ralentissement du temps
         switch (state)
         {
             case LaserState.Idle:
@@ -73,12 +71,7 @@ public class LaserCannonParent : MonoBehaviour
 
             case LaserState.Extending:
                 currentLength += speed * Time.deltaTime;
-                
-                // Si on dépasse la distance max ou si on touche un mur
-                if (CheckCollision() || currentLength >= maxDistance)
-                {
-                    SetState(LaserState.Retracting);
-                }
+                if (CheckCollision() || currentLength >= maxDistance) SetState(LaserState.Retracting);
                 UpdateLaserVisuel();
                 break;
 
@@ -92,7 +85,6 @@ public class LaserCannonParent : MonoBehaviour
 
     private bool CheckCollision()
     {
-        // Détection de collision avec le décor
         return Physics.Raycast(muzzlePoint.position, muzzlePoint.forward, currentLength, collisionLayers);
     }
 
@@ -102,7 +94,6 @@ public class LaserCannonParent : MonoBehaviour
         Vector3 direction = muzzlePoint.forward;
         Vector3 endPoint = origin + (direction * currentLength);
 
-        // Raycast pour bloquer visuellement le laser contre les murs
         if (Physics.Raycast(origin, direction, out RaycastHit hit, currentLength, collisionLayers))
         {
             endPoint = hit.point;
@@ -119,20 +110,25 @@ public class LaserCannonParent : MonoBehaviour
         float dist = Vector3.Distance(start, end);
         if (Physics.Raycast(start, (end - start).normalized, out RaycastHit hit, dist))
         {
-            if (hit.collider.CompareTag("Player"))
-            {
-                Kill();
-            }
+            if (hit.collider.CompareTag("Player")) Kill();
         }
     }
 
     private void Kill()
     {
-        // Téléportation et reset de vélocité si pas en God Mode
         if (playerCheat != null && !playerCheat.godMode && respawnPoint != null)
         {
+            // --- LOGIQUE SON ---
+            if (deathSoundInstance.isValid())
+            {
+                deathSoundInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+                deathSoundInstance.release();
+            }
+            deathSoundInstance = FMODUnity.RuntimeManager.CreateInstance(deathSound);
+            deathSoundInstance.start();
+
+            // --- TÉLÉPORTATION ---
             playerTransform.position = respawnPoint.position;
-            
             Rigidbody rb = playerTransform.GetComponent<Rigidbody>();
             if (rb != null) rb.linearVelocity = Vector3.zero;
         }
@@ -144,5 +140,10 @@ public class LaserCannonParent : MonoBehaviour
         timer = 0;
         if (state == LaserState.Extending) line.enabled = true;
         if (state == LaserState.Idle) { line.enabled = false; currentLength = 0; }
+    }
+
+    private void OnDestroy()
+    {
+        if (deathSoundInstance.isValid()) deathSoundInstance.release();
     }
 }

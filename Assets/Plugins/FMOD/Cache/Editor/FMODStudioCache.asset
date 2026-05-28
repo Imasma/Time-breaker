@@ -48,6 +48,33 @@ MonoBehaviour:
   IsGlobal: 1
   Labels: []
   Exists: 1
+--- !u!114 &-4765599633351880337
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Death
+  m_EditorClassIdentifier: FMODUnityEditor::FMODUnity.EditorEventRef
+  Path: event:/Death
+  Guid:
+    Data1: 1413329567
+    Data2: 1208494937
+    Data3: 386364304
+    Data4: 1522384921
+  Banks:
+  - {fileID: -2498550455313734044}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0
 --- !u!114 &-4563446553801844840
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -91,10 +118,10 @@ MonoBehaviour:
   Path: Sons_Fmod/Tests/Build/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 639135243815067526
+  lastModified: 639156033577055537
   FileSizes:
   - Name: 
-    Value: 886
+    Value: 1018
   Exists: 1
 --- !u!114 &-2498550455313734044
 MonoBehaviour:
@@ -111,7 +138,7 @@ MonoBehaviour:
   Path: Sons_Fmod/Tests/Build/Desktop/Master.bank
   Name: Master
   StudioPath: bank:/Master
-  lastModified: 639135243814866836
+  lastModified: 639156033577019318
   FileSizes: []
   Exists: 1
 --- !u!114 &11400000
@@ -132,13 +159,16 @@ MonoBehaviour:
   EditorEvents:
   - {fileID: -4563446553801844840}
   - {fileID: 7403955312291829241}
+  - {fileID: 5988332645818333737}
+  - {fileID: -4765599633351880337}
+  - {fileID: 5901026150655993623}
   EditorParameters:
   - {fileID: 725297290259280895}
   MasterBanks:
   - {fileID: -2498550455313734044}
   StringsBanks:
   - {fileID: -4097478124291349059}
-  cacheTime: 639135243815067526
+  cacheTime: 639156033577055537
   cacheVersion: 131842
 --- !u!114 &725297290259280895
 MonoBehaviour:
@@ -164,6 +194,85 @@ MonoBehaviour:
   IsGlobal: 1
   Labels: []
   Exists: 1
+--- !u!114 &5343883843730207591
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: parameter:/Checkpoint/GameTimeScale
+  m_EditorClassIdentifier: FMODUnityEditor::FMODUnity.EditorParamRef
+  Name: GameTimeScale
+  StudioPath: 
+  Min: 0
+  Max: 1
+  Default: 1
+  ID:
+    data1: 4081638988
+    data2: 3660682381
+  Type: 0
+  IsGlobal: 1
+  Labels: []
+  Exists: 1
+--- !u!114 &5901026150655993623
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Cristal_Musique
+  m_EditorClassIdentifier: FMODUnityEditor::FMODUnity.EditorEventRef
+  Path: event:/Cristal_Musique
+  Guid:
+    Data1: -488205950
+    Data2: 1170877316
+    Data3: -2096876639
+    Data4: -1533750532
+  Banks:
+  - {fileID: -2498550455313734044}
+  IsStream: 1
+  Is3D: 0
+  IsOneShot: 0
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 92000
+--- !u!114 &5988332645818333737
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Checkpoint
+  m_EditorClassIdentifier: FMODUnityEditor::FMODUnity.EditorEventRef
+  Path: event:/Checkpoint
+  Guid:
+    Data1: -820862563
+    Data2: 1170342403
+    Data3: -1280041313
+    Data4: -360132502
+  Banks:
+  - {fileID: -2498550455313734044}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters:
+  - {fileID: 5343883843730207591}
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0
 --- !u!114 &7403955312291829241
 MonoBehaviour:
   m_ObjectHideFlags: 0

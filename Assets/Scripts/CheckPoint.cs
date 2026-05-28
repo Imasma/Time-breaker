@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class CheckPoint : MonoBehaviour
 {
+    [SerializeField] private FMODUnity.EventReference setSpawn;
+
     public GameObject respawnPoint;
     private bool checkpointUsed = false;
 
@@ -18,7 +20,9 @@ public class CheckPoint : MonoBehaviour
             respawnPoint.transform.position = gameObject.transform.position;
             checkpointUsed = !checkpointUsed;
             GetComponent<Renderer>().material.EnableKeyword("_EMISSION");        
+            
+            FMODUnity.RuntimeManager.PlayOneShot(setSpawn, transform.position);
+
         }
     }    
-
 }

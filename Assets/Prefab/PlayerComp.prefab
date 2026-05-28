@@ -145,7 +145,7 @@ MonoBehaviour:
   target: {fileID: 557773948738305211}
   normalOffset: {x: 0, y: 0.5, z: -10}
   slowModeOffset: {x: 0, y: 0.5, z: -15}
-  smoothTime: 0.25
+  smoothTime: 0.1
   offsetTransitionSpeed: 5
   timer: 0.1
 --- !u!114 &2457551107595722528
@@ -348,6 +348,7 @@ GameObject:
   - component: {fileID: 8857194273134590270}
   - component: {fileID: 6490755822752851515}
   - component: {fileID: 2482252708845984017}
+  - component: {fileID: 6672302980925081448}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -629,7 +630,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   crystalTag: Crystal
-  transitionSpeed: 1
+  transitionSpeed: 3
   showGizmos: 1
   gizmoColor: {r: 0.3, g: 0.9, b: 1, a: 0.25}
 --- !u!114 &2482252708845984017
@@ -647,6 +648,27 @@ MonoBehaviour:
   rotationSpeed: 5
   movementThreshold: 0.1
   avatar: {fileID: 6248533635147874713}
+  modelYOffset: 180
+--- !u!114 &6672302980925081448
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8941407511240436085}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01836ef4997d2f741b8f8e0d5455f603, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerProximityEmitter
+  detectionRadius: 2.5
+  crystalLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  crystalTag: Crystal
+  transitionSpeed: 5
+  showGizmos: 1
+  gizmoColor: {r: 0.3, g: 0.9, b: 1, a: 0.25}
 --- !u!1001 &5854109149640304242
 PrefabInstance:
   m_ObjectHideFlags: 0

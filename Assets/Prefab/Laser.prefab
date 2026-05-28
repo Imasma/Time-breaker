@@ -416,6 +416,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac1db1c61e835094eb767802983b1a8a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LaserCannonParent
+  deathSound:
+    Guid:
+      Data1: 1413329567
+      Data2: 1208494937
+      Data3: 386364304
+      Data4: 1522384921
+    Path: event:/Death
   laserMaterial: {fileID: 2100000, guid: 779526a32f310ff40ab901598bc53d60, type: 2}
   laserWidth: 0.1
   muzzlePoint: {fileID: 5848343390706491771}

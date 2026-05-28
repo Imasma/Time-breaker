@@ -5,27 +5,59 @@ public class MovingPlatforms : MonoBehaviour
     [Header("Positions")]
     [SerializeField] private Transform startPoint;
     [SerializeField] private Transform endPoint;
-    [SerializeField] private GameObject GroundGO;
+    [SerializeField] private GameObject GroundGO; // Le GameObject qui a le Collider et le Rigidbody
 
     [Header("Parameters")] 
     [SerializeField] private float speed = 2f;
 
-    void Update()
+    private Rigidbody rb;
+
+    void Start()
     {
-        MovePlatform();
+        if (GroundGO != null)
+        {
+            // On récupère le Rigidbody sur l'objet qui doit bouger
+            rb = GroundGO.GetComponent<Rigidbody>();
+            
+            if (rb == null)
+            {
+                // On l'ajoute automatiquement s'il n'existe pas
+                rb = GroundGO.AddComponent<Rigidbody>();
+            }
+
+            // Configuration cruciale pour une plateforme physique
+            rb.isKinematic = true; 
+            rb.interpolation = RigidbodyInterpolation.Interpolate;
+        }
+        else
+        {
+            Debug.LogError("Veuillez assigner GroundGO dans l'inspecteur !", this);
+        }
+    }
+
+    void FixedUpdate()
+    {
+        if (rb != null)
+        {
+            MovePlatform();
+        }
     }
 
     private void MovePlatform()
     {
-        // On calcule un facteur qui varie entre 0 et 1 selon le temps et la vitesse
-        float t = Mathf.PingPong(Time.time * speed, 1f);
+        // On utilise Time.fixedTime au lieu de Time.time car on est dans le FixedUpdate
+        float t = Mathf.PingPong(Time.fixedTime * speed, 1f);
         
-        GroundGO.transform.position = Vector3.Lerp(startPoint.position, endPoint.position, t);
+        // Calcul de la position cible
+        Vector3 targetPosition = Vector3.Lerp(startPoint.position, endPoint.position, t);
+        
+        // Déplacement physique fluide
+        rb.MovePosition(targetPosition);
     }
     
     private void OnDrawGizmos()
     {
-        if (startPoint != null && endPoint != null)
+        if (startPoint != null && endPoint != null && GroundGO != null)
         {
             Gizmos.color = Color.green;
             Gizmos.DrawLine(startPoint.position, endPoint.position);

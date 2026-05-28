@@ -106,6 +106,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75d2c6cbbb6d1cb4ba33506adf284458, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BulletKill
+  deathSound:
+    Guid:
+      Data1: 1413329567
+      Data2: 1208494937
+      Data3: 386364304
+      Data4: 1522384921
+    Path: event:/Death
   respawnPoint: {fileID: 0}
   Cheat: {fileID: 0}
 --- !u!54 &6854586065308023794
