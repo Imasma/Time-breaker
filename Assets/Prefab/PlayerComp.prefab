@@ -551,7 +551,6 @@ MonoBehaviour:
   rotationSpeed: 5
   movementThreshold: 0.1
   avatar: {fileID: 6248533635147874713}
-  modelYOffset: 180
 --- !u!114 &6672302980925081448
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -912,15 +911,15 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 64385706f766a9743bc9c556399d820a, type: 2}
     - target: {fileID: 2892657565341994406, guid: 1a7c95865f8045d4cbc9080c212b1aac, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 4.6
+      value: 4.653
       objectReference: {fileID: 0}
     - target: {fileID: 2892657565341994406, guid: 1a7c95865f8045d4cbc9080c212b1aac, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.09
+      value: 0.08
       objectReference: {fileID: 0}
     - target: {fileID: 2892657565341994406, guid: 1a7c95865f8045d4cbc9080c212b1aac, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -2.88
+      value: -2.958
       objectReference: {fileID: 0}
     - target: {fileID: 2892657565341994406, guid: 1a7c95865f8045d4cbc9080c212b1aac, type: 3}
       propertyPath: m_LocalRotation.w

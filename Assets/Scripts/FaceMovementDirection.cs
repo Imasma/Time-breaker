@@ -9,12 +9,12 @@ public class FaceMovementDirection : MonoBehaviour
     [Header("References")]
     public Transform avatar;
 
-    [Header("Model Offset")]
-    public float modelYOffset = 180f;
-
     private Rigidbody rb;
     private bool hasMovedOnce = false;
     private Vector3 lastValidDirection;
+
+    // ✅ Rotation de base — face caméra
+    private Quaternion baseRotation;
 
     void Start()
     {
@@ -27,7 +27,8 @@ public class FaceMovementDirection : MonoBehaviour
                 avatar = player.transform;
         }
 
-        transform.rotation = Quaternion.identity * Quaternion.Euler(0f, modelYOffset, 0f);
+        // ✅ On mémorise la rotation initiale comme référence absolue
+        baseRotation = transform.rotation;
     }
 
     void Update()
@@ -42,7 +43,7 @@ public class FaceMovementDirection : MonoBehaviour
         if (inputMagnitude > movementThreshold)
         {
             hasMovedOnce = true;
-            lastValidDirection = inputDirection;
+            lastValidDirection = -inputDirection;
             targetRotation = Quaternion.LookRotation(lastValidDirection);
         }
         else
@@ -76,32 +77,22 @@ public class FaceMovementDirection : MonoBehaviour
             }
         }
 
-        targetRotation *= Quaternion.Euler(0f, modelYOffset, 0f);
-
         Quaternion newRotation = Quaternion.Lerp(
             transform.rotation,
             targetRotation,
             rotationSpeed * Time.deltaTime
         );
 
-        // ✅ CLAMP FINAL — on vérifie l'angle par rapport à lastValidDirection
-        // après le lerp, avant d'appliquer la rotation
-        Vector3 newForward = newRotation * Vector3.forward;
-        Vector3 referenceForward = Quaternion.LookRotation(lastValidDirection)
-                                   * Quaternion.Euler(0f, modelYOffset, 0f)
-                                   * Vector3.forward;
+        // ✅ Clamp par rapport à la rotation de base (face caméra)
+        // On extrait l'angle Y de la nouvelle rotation
+        float yAngle = newRotation.eulerAngles.y;
 
-        float finalAngle = Vector3.SignedAngle(referenceForward, newForward, Vector3.up);
+        // Convertir en -180/+180
+        if (yAngle > 180f) yAngle -= 360f;
 
-        if (Mathf.Abs(finalAngle) > 89f)
-        {
-            // ✅ On force la rotation à rester dans les limites
-            float clampedAngle = Mathf.Clamp(finalAngle, -89f, 89f);
-            newRotation = Quaternion.LookRotation(lastValidDirection)
-                          * Quaternion.Euler(0f, modelYOffset, 0f)
-                          * Quaternion.Euler(0f, clampedAngle, 0f);
-        }
+        // ✅ Bloquer entre -90° et +90° — jamais dos à la caméra
+        yAngle = Mathf.Clamp(yAngle, -80f, 80f);
 
-        transform.rotation = newRotation;
+        transform.rotation = Quaternion.Euler(0f, yAngle, 0f);
     }
 }

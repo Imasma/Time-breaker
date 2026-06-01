@@ -1,13 +1,11 @@
 using System.Collections;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 public class BreakablePlatform : MonoBehaviour
 {
     [Header("Références")]
     [Tooltip("Cube qui doit disparaître.")]
     [SerializeField] private GameObject platformGO;
-
     [Tooltip("Glissez ici l'objet Particle System.")]
     [SerializeField] private ParticleSystem breakParticles;
 
@@ -18,13 +16,29 @@ public class BreakablePlatform : MonoBehaviour
 
     private bool isBroken = false;
 
-    // Note : OnCollisionEnter fonctionne sur le parent si l'enfant a le Collider 
-    // et qu'aucun des deux n'a de Rigidbody, ou si le Rigidbody est sur le parent.
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.CompareTag(playerTag) && !isBroken)
         {
+            // ✅ Lance les particules dès que le joueur touche la plateforme
+            if (breakParticles != null)
+            {
+                breakParticles.gameObject.SetActive(true);
+                breakParticles.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+                breakParticles.Play();
+            }
+
             StartCoroutine(BreakSequence());
+        }
+    }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        // ✅ Stop les particules si le joueur quitte avant la cassure
+        if (collision.gameObject.CompareTag(playerTag) && !isBroken)
+        {
+            if (breakParticles != null)
+                breakParticles.Stop();
         }
     }
 
@@ -32,30 +46,21 @@ public class BreakablePlatform : MonoBehaviour
     {
         isBroken = true;
 
-        // 1. Attente avant la cassure
+        // ✅ Pendant le breakDelay le joueur voit les particules
         yield return new WaitForSeconds(breakDelay);
 
-        // 2. Particules
+        // ✅ Stop les particules puis casse la plateforme
         if (breakParticles != null)
-        {
-            breakParticles.Play();
-        }
+            breakParticles.Stop();
 
-        // 3. On désactive l'objet référencé (le cube enfant)
         if (platformGO != null)
-        {
             platformGO.SetActive(false);
-        }
 
-        // 4. Temps de recharge
         yield return new WaitForSeconds(respawnDelay);
 
-        // 5. On réactive le cube enfant
         if (platformGO != null)
-        {
             platformGO.SetActive(true);
-        }
-        
-        isBroken = false; 
+
+        isBroken = false;
     }
 }
